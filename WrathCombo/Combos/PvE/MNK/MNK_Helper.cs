@@ -136,7 +136,7 @@ internal static partial class MNK
 
     internal static bool UsePerfectBalance()
     {
-        if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasEffect(Buffs.FormlessFist))
+        if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasEffect(Buffs.FormlessFist) && !HasEffect(Buffs.FiresRumination))
         {
             // Odd window
             if ((JustUsed(OriginalHook(Bootshine)) || JustUsed(DragonKick)) &&
