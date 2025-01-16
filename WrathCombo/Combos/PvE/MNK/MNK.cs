@@ -114,7 +114,7 @@ internal static partial class MNK
                 !HasEffect(Buffs.PerfectBalance) &&
                 !HasEffect(Buffs.FormlessFist) &&
                 (JustUsed(OriginalHook(Bootshine)) ||
-                 JustUsed(OriginalHook(DragonKick)))
+                 JustUsed(OriginalHook(DragonKick))))
                 return FiresReply;
 
             if (HasEffect(Buffs.WindsRumination) &&
@@ -137,19 +137,40 @@ internal static partial class MNK
             if (actionID is not (Bootshine or LeapingOpo or DragonKick))
                 return actionID;
 
+            if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
+                IsEnabled(CustomComboPreset.MNK_STUseWindsReply) &&
+                HasBattleTarget() &&
+                HasEffect(Buffs.WindsRumination) &&
+                LevelChecked(WindsReply) &&
+                HasEffect(Buffs.RiddleOfWind) &&
+                (GetBuffRemainingTime(Buffs.WindsRumination) < 2 || !InMeleeRange()) && GetTargetDistance() <= 10)
+                return WindsReply;
+                
+            if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
+                IsEnabled(CustomComboPreset.MNK_STUseFiresReply) &&
+                HasEffect(Buffs.FiresRumination) &&
+                (HasBattleTarget() && !InMeleeRange() && GetTargetDistance() <= 20))
+                return FiresReply;
+
             if (IsEnabled(CustomComboPreset.MNK_STUseMeditation) &&
-                (!InCombat() || !InMeleeRange()) &&
+                (!InCombat() || !HasBattleTarget() || !InMeleeRange()) &&
                 Gauge.Chakra < 5 &&
-                !HasEffect(Buffs.RiddleOfFire) &&
+                !HasEffect(Buffs.Brotherhood) &&
                 LevelChecked(SteeledMeditation))
                 return OriginalHook(SteeledMeditation);
 
             if (IsEnabled(CustomComboPreset.MNK_STUseFormShift) &&
-                !InCombat() && LevelChecked(FormShift) &&
+                (!InCombat() || !HasBattleTarget() || !InMeleeRange()) && LevelChecked(FormShift) &&
                 !HasEffect(Buffs.FormlessFist) && !HasEffect(Buffs.PerfectBalance))
                 return FormShift;
+            
+            if (IsEnabled(CustomComboPreset.MNK_STUseMeditation) &&
+                (!InCombat() || !HasBattleTarget() || !InMeleeRange()) &&
+                Gauge.Chakra < 5 &&
+                LevelChecked(SteeledMeditation))
+                return OriginalHook(SteeledMeditation);
 
-            if (IsEnabled(CustomComboPreset.MNK_STUseOpener) && actionID is not DragonKick)
+            if (IsEnabled(CustomComboPreset.MNK_STUseOpener))
                 if (Opener().FullOpener(ref actionID))
                 {
                     if (IsOnCooldown(RiddleOfWind) &&
@@ -166,12 +187,22 @@ internal static partial class MNK
                 PlayerHealthPercentageHp() <= Config.MNK_VariantCure)
                 return Variant.VariantCure;
 
+            if (IsEnabled(CustomComboPreset.MNK_STUseBrotherhood) &&
+                IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat() &&
+                (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.65) && 
+                ((HasEffect(Buffs.PerfectBalance) && GetBuffStacks(Buffs.PerfectBalance) <= 2) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 1) || GetRemainingCharges(PerfectBalance) <= 0) &&
+                GetTargetHPPercent() >= Config.MNK_ST_Brotherhood_HP &&
+                actionID is not DragonKick)
+                return Brotherhood;
+
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_STUseROF) &&
-                ActionReady(RiddleOfFire) &&
-                (!ActionReady(Brotherhood) || HasEffect(Buffs.Brotherhood)) &&
-                CanDelayedWeave() &&
+                (IsOffCooldown(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) <= 1.05) &&
+                !HasEffect(Buffs.RiddleOfFire) &&
+                (!IsOffCooldown(Brotherhood) || HasEffect(Buffs.Brotherhood)) &&
                 GetTargetHPPercent() >= Config.MNK_ST_RiddleOfFire_HP &&
+                GetCooldownRemainingTime(Brotherhood) >= 15 &&
+                (GetCooldownRemainingTime(Brotherhood) >= 110 || HasEffect(Buffs.Brotherhood) || RemainingGCD <= 1) &&
                 actionID is not DragonKick)
                 return RiddleOfFire;
 
@@ -184,26 +215,23 @@ internal static partial class MNK
                     IsOffCooldown(Variant.VariantRampart))
                     return Variant.VariantRampart;
 
-                if (IsEnabled(CustomComboPreset.MNK_STUseBuffs))
-                {
-                    if (IsEnabled(CustomComboPreset.MNK_STUseBrotherhood) &&
-                        ActionReady(Brotherhood) &&
-                        ((HasEffect(Buffs.PerfectBalance) && GetBuffStacks(Buffs.PerfectBalance) <= 1) || GetRemainingCharges(Buffs.PerfectBalance) <= 1) &&
-                        GetTargetHPPercent() >= Config.MNK_ST_Brotherhood_HP &&
-                        actionID is not DragonKick)
-                        return Brotherhood;
-
-                    if (IsEnabled(CustomComboPreset.MNK_STUseROW) &&
-                        ActionReady(RiddleOfWind) &&
-                        GetTargetHPPercent() >= Config.MNK_ST_RiddleOfWind_HP)
-                        return RiddleOfWind;
-                }
-
                 //Perfect Balance
                 if (IsEnabled(CustomComboPreset.MNK_STUsePerfectBalance) &&
                     UsePerfectBalance() &&
                     actionID is not DragonKick)
                     return PerfectBalance;
+
+                if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat())
+                {
+
+                    if (IsEnabled(CustomComboPreset.MNK_STUseROW) &&
+                        IsOffCooldown(RiddleOfWind) &&
+                        !HasEffect(Buffs.RiddleOfWind) &&
+                        HasBattleTarget() &&
+                        GetTargetDistance() <= 10 &&
+                        GetTargetHPPercent() >= Config.MNK_ST_RiddleOfWind_HP)
+                        return RiddleOfWind;
+                }
 
                 if (IsEnabled(CustomComboPreset.MNK_ST_ComboHeals))
                 {
@@ -215,13 +243,13 @@ internal static partial class MNK
                 }
 
                 if (IsEnabled(CustomComboPreset.MNK_STUseTheForbiddenChakra) &&
-                    Gauge.Chakra >= 5 && InCombat() &&
+                    Gauge.Chakra >= 5 && InCombat() && HasBattleTarget() && InMeleeRange() &&
                     LevelChecked(SteeledMeditation))
                     return OriginalHook(SteeledMeditation);
             }
 
             // GCDs
-            if (HasEffect(Buffs.FormlessFist))
+            if (HasEffect(Buffs.FormlessFist) && HasBattleTarget() && InMeleeRange())
                 return Gauge.OpoOpoFury == 0
                     ? OriginalHook(DragonKick)
                     : OriginalHook(Bootshine);
@@ -230,11 +258,14 @@ internal static partial class MNK
             if (IsEnabled(CustomComboPreset.MNK_STUseMasterfulBlitz) &&
                 LevelChecked(MasterfulBlitz) &&
                 !HasEffect(Buffs.PerfectBalance) &&
-                !IsOriginal(MasterfulBlitz))
+                !IsOriginal(MasterfulBlitz) &&
+                HasBattleTarget() && InMeleeRange() &&
+                GetCooldownRemainingTime(Brotherhood) >= GCD * 3 &&
+                (GetCooldownRemainingTime(Brotherhood) <= 120 - (GCD * 2) || GetCooldownRemainingTime(RiddleOfFire) >= 4))
                 return OriginalHook(MasterfulBlitz);
 
             // Perfect Balance
-            if (HasEffect(Buffs.PerfectBalance))
+            if (HasEffect(Buffs.PerfectBalance) && HasBattleTarget() && InMeleeRange())
             {
                 #region Open Lunar
 
@@ -249,15 +280,15 @@ internal static partial class MNK
 
                 if (!SolarNadi && !BothNadisOpen)
                 {
-                    if (RaptorChakra == 0)
-                        return Gauge.RaptorFury == 0
-                            ? TwinSnakes
-                            : OriginalHook(TrueStrike);
-                    
                     if (OpoOpoChakra == 0)
                         return Gauge.OpoOpoFury == 0
                             ? OriginalHook(DragonKick)
                             : OriginalHook(Bootshine);
+                    
+                    if (RaptorChakra == 0)
+                        return Gauge.RaptorFury == 0
+                            ? TwinSnakes
+                            : OriginalHook(TrueStrike);
 
                     if (CoeurlChakra == 0)
                         return Gauge.CoeurlFury == 0
@@ -274,22 +305,28 @@ internal static partial class MNK
                     HasEffect(Buffs.FiresRumination) &&
                     !HasEffect(Buffs.PerfectBalance) &&
                     !HasEffect(Buffs.FormlessFist) &&
+                    HasBattleTarget() &&
+                    GetTargetDistance() <= 20 &&
                     (JustUsed(OriginalHook(Bootshine)) ||
                      JustUsed(OriginalHook(DragonKick)) ||
                      GetBuffRemainingTime(Buffs.FiresRumination) < 4))
                     return FiresReply;
 
-                if (IsEnabled(CustomComboPreset.MNK_STUseROW) &&
-                    IsEnabled(CustomComboPreset.MNK_STUseWindsReply) &&
+                if (IsEnabled(CustomComboPreset.MNK_STUseWindsReply) &&
                     HasEffect(Buffs.WindsRumination) &&
                     LevelChecked(WindsReply) &&
                     HasEffect(Buffs.RiddleOfWind) &&
-                    GetBuffRemainingTime(Buffs.WindsRumination) < 4)
+                    HasBattleTarget() &&
+                    GetTargetDistance() <= 10 &&
+                    GetBuffRemainingTime(Buffs.WindsRumination) < 6)
                     return WindsReply;
             }
 
             // Standard Beast Chakras
-            return DetermineCoreAbility(actionID, IsEnabled(CustomComboPreset.MNK_STUseTrueNorth));
+            return DetermineCoreAbility(actionID, IsEnabled(CustomComboPreset.MNK_STUseTrueNorth) &&
+                                        (GetRemainingCharges(TrueNorth) >= 2 ||
+                                         (GetRemainingCharges(TrueNorth) >= 1 && GetCooldownRemainingTime(Brotherhood) >= GetCooldownRemainingTime(TrueNorth)) ||
+                                         HasEffect(Buffs.Brotherhood)));
         }
     }
 
@@ -481,11 +518,8 @@ internal static partial class MNK
                 if (IsEnabled(CustomComboPreset.MNK_AoEUsePerfectBalance) &&
                     ActionReady(PerfectBalance) &&
                     !HasEffect(Buffs.PerfectBalance) &&
-                    (GetRemainingCharges(PerfectBalance) == GetMaxCharges(PerfectBalance) ||
-                     GetCooldownRemainingTime(PerfectBalance) <= 4 ||
-                     HasEffect(Buffs.Brotherhood) ||
-                     (HasEffect(Buffs.RiddleOfFire) && GetBuffRemainingTime(Buffs.RiddleOfFire) < 10) ||
-                     (GetCooldownRemainingTime(RiddleOfFire) < 4 && GetCooldownRemainingTime(Brotherhood) < 8)))
+                    (HasEffect(Buffs.Brotherhood) ||
+                     (HasEffect(Buffs.RiddleOfFire) && GetBuffRemainingTime(Buffs.RiddleOfFire) < 10)))
                     return PerfectBalance;
 
                 if (IsEnabled(CustomComboPreset.MNK_AoEUseHowlingFist) &&
@@ -598,8 +632,8 @@ internal static partial class MNK
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.MNK_Riddle_Brotherhood;
 
         protected override uint Invoke(uint actionID) =>
-            actionID is RiddleOfFire &&
-            (ActionReady(Brotherhood) || GetCooldownRemainingTime(Brotherhood) < GetCooldownRemainingTime(RiddleOfFire)
+            (actionID is RiddleOfFire &&
+            (IsOffCooldown(Brotherhood) || (GetCooldownRemainingTime(Brotherhood) < GetCooldownRemainingTime(RiddleOfFire) + 3)))
                 ? Brotherhood
                 : actionID;
     }

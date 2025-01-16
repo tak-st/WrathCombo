@@ -77,6 +77,8 @@ internal static partial class MNK
     internal static MNKGauge Gauge = GetJobGauge<MNKGauge>();
     internal static MNKOpenerLogicSL MNKOpenerSL = new();
     internal static MNKOpenerLogicLL MNKOpenerLL = new();
+    internal static MNKOpenerLogicSL7 MNKOpenerSL7 = new();
+    internal static MNKOpenerLogicLL7 MNKOpenerLL7 = new();
 
     internal static float GCD => GetCooldown(OriginalHook(Bootshine)).CooldownTotal;
 
@@ -95,8 +97,8 @@ internal static partial class MNK
     internal static uint DetermineCoreAbility(uint actionId, bool useTrueNorthIfEnabled)
     {
         if (HasEffect(Buffs.OpoOpoForm) || HasEffect(Buffs.FormlessFist))
-            return Gauge.OpoOpoFury == 0 && LevelChecked(DragonKick)
-                ? DragonKick
+            return Gauge.OpoOpoFury == 0 && LevelChecked(OriginalHook(DragonKick))
+                ? OriginalHook(DragonKick)
                 : OriginalHook(Bootshine);
 
         if (HasEffect(Buffs.RaptorForm))
@@ -139,18 +141,18 @@ internal static partial class MNK
         if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasEffect(Buffs.FormlessFist) && !HasEffect(Buffs.FiresRumination))
         {
             // Odd window
-            if ((JustUsed(OriginalHook(Bootshine)) || JustUsed(DragonKick)) &&
+            if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD)) &&
                 !JustUsed(PerfectBalance, 20) &&
                 HasEffect(Buffs.RiddleOfFire) && !HasEffect(Buffs.Brotherhood))
                 return true;
 
             // Even window
-            if ((JustUsed(OriginalHook(Bootshine)) || JustUsed(DragonKick)) &&
-                (GetCooldownRemainingTime(Brotherhood) <= GCD * 3 || HasEffect(Buffs.Brotherhood)))
+            if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD) || IsOffCooldown(Brotherhood)) &&
+                (GetCooldownRemainingTime(Brotherhood) <= GCD * 3.9 || HasEffect(Buffs.Brotherhood)))
                 return true;
 
             // Low level
-            if ((JustUsed(OriginalHook(Bootshine)) || JustUsed(DragonKick)) &&
+            if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick))) &&
                 ((HasEffect(Buffs.RiddleOfFire) && !LevelChecked(Brotherhood)) ||
                  !LevelChecked(RiddleOfFire)))
                 return true;
@@ -169,6 +171,12 @@ internal static partial class MNK
         if (Config.MNK_SelectedOpener == 1)
             return MNKOpenerSL;
 
+        if (Config.MNK_SelectedOpener == 2)
+            return MNKOpenerLL7;
+
+        if (Config.MNK_SelectedOpener == 3)
+            return MNKOpenerSL7;
+
         return WrathOpener.Dummy;
     }
 
@@ -180,6 +188,7 @@ internal static partial class MNK
 
         public override List<uint> OpenerActions { get; set; } =
         [
+            DragonKick,
             PerfectBalance,
             TwinSnakes,
             Demolish,
@@ -189,6 +198,64 @@ internal static partial class MNK
             TheForbiddenChakra,
             RiddleOfWind,
             RisingPhoenix,
+            DragonKick,
+            WindsReply,
+            FiresReply,
+            LeapingOpo,
+            PerfectBalance,
+            DragonKick,
+            LeapingOpo,
+            DragonKick,
+            ElixirBurst,
+            LeapingOpo
+        ];
+
+        internal override UserData? ContentCheckConfig => Config.MNK_Balance_Content;
+        public override bool HasCooldowns()
+        {
+            if (GetRemainingCharges(PerfectBalance) < 2)
+                return false;
+
+            if (!IsOffCooldown(Brotherhood))
+                return false;
+
+            if (!IsOffCooldown(RiddleOfFire))
+                return false;
+
+            if (!IsOffCooldown(RiddleOfWind))
+                return false;
+
+            if (Gauge.Nadi != Nadi.NONE)
+                return false;
+
+            if (Gauge.RaptorFury != 0)
+                return false;
+
+            if (Gauge.CoeurlFury != 0)
+                return false;
+
+            return true;
+        }
+    }
+
+        internal class MNKOpenerLogicSL7 : WrathOpener
+    {
+        public override int MinOpenerLevel => 100;
+
+        public override int MaxOpenerLevel => 109;
+
+        public override List<uint> OpenerActions { get; set; } =
+        [
+            DragonKick,
+            PerfectBalance,
+            TwinSnakes,
+            LeapingOpo,
+            Demolish,
+            Brotherhood,
+            RiddleOfFire,
+            RisingPhoenix,
+            TheForbiddenChakra,
+            RiddleOfWind,
             DragonKick,
             WindsReply,
             FiresReply,
@@ -247,6 +314,64 @@ internal static partial class MNK
             TheForbiddenChakra,
             RiddleOfWind,
             ElixirBurst,
+            DragonKick,
+            WindsReply,
+            FiresReply,
+            LeapingOpo,
+            PerfectBalance,
+            DragonKick,
+            LeapingOpo,
+            DragonKick,
+            ElixirBurst,
+            LeapingOpo
+        ];
+        internal override UserData? ContentCheckConfig => Config.MNK_Balance_Content;
+
+        public override bool HasCooldowns()
+        {
+            if (GetRemainingCharges(PerfectBalance) < 2)
+                return false;
+
+            if (!IsOffCooldown(Brotherhood))
+                return false;
+
+            if (!IsOffCooldown(RiddleOfFire))
+                return false;
+
+            if (!IsOffCooldown(RiddleOfWind))
+                return false;
+
+            if (Gauge.Nadi != Nadi.NONE)
+                return false;
+
+            if (Gauge.RaptorFury != 0)
+                return false;
+
+            if (Gauge.CoeurlFury != 0)
+                return false;
+
+            return true;
+        }
+    }
+    
+    internal class MNKOpenerLogicLL7 : WrathOpener
+    {
+        public override int MinOpenerLevel => 100;
+
+        public override int MaxOpenerLevel => 109;
+
+        public override List<uint> OpenerActions { get; set; } =
+        [
+            DragonKick,
+            PerfectBalance,
+            TheForbiddenChakra,
+            LeapingOpo,
+            DragonKick,
+            LeapingOpo,
+            Brotherhood,
+            RiddleOfFire,
+            ElixirBurst,
+            RiddleOfWind,
             DragonKick,
             WindsReply,
             FiresReply,

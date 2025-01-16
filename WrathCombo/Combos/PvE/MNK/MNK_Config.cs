@@ -82,11 +82,17 @@ internal static partial class MNK
                     break;
 
                 case CustomComboPreset.MNK_STUseOpener:
-                    DrawHorizontalRadioButton(MNK_SelectedOpener, "Double Lunar", "Uses Lunar/Lunar opener",
+                    DrawHorizontalRadioButton(MNK_SelectedOpener, "Double 5s", "Uses Lunar/Lunar opener",
                         0);
 
-                    DrawHorizontalRadioButton(MNK_SelectedOpener, "Solar Lunar", "Uses Solar/Lunar opener",
+                    DrawHorizontalRadioButton(MNK_SelectedOpener, "Solar 5s", "Uses Solar/Lunar opener",
                         1);
+
+                    DrawHorizontalRadioButton(MNK_SelectedOpener, "Double 7s", "Uses Lunar/Lunar opener",
+                        2);
+
+                    DrawHorizontalRadioButton(MNK_SelectedOpener, "Solar 7s", "Uses Solar/Lunar opener",
+                        3);
 
                     DrawBossOnlyChoice(MNK_Balance_Content);
 
