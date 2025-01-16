@@ -66,7 +66,7 @@ internal static partial class MNK
             // GCDs
             if (HasEffect(Buffs.FormlessFist))
                 return Gauge.OpoOpoFury == 0
-                    ? DragonKick
+                    ? OriginalHook(DragonKick)
                     : OriginalHook(Bootshine);
 
             // Masterful Blitz
@@ -82,7 +82,7 @@ internal static partial class MNK
 
                 if (!LunarNadi || BothNadisOpen || (!SolarNadi && !LunarNadi))
                     return Gauge.OpoOpoFury == 0
-                        ? DragonKick
+                        ? OriginalHook(DragonKick)
                         : OriginalHook(Bootshine);
 
                 #endregion
@@ -103,7 +103,7 @@ internal static partial class MNK
 
                     if (OpoOpoChakra == 0)
                         return Gauge.OpoOpoFury == 0
-                            ? DragonKick
+                            ? OriginalHook(DragonKick)
                             : OriginalHook(Bootshine);
                 }
 
@@ -114,7 +114,7 @@ internal static partial class MNK
                 !HasEffect(Buffs.PerfectBalance) &&
                 !HasEffect(Buffs.FormlessFist) &&
                 (JustUsed(OriginalHook(Bootshine)) ||
-                 JustUsed(DragonKick) ||
+                 JustUsed(OriginalHook(DragonKick)) ||
                  GetBuffRemainingTime(Buffs.FiresRumination) < 4))
                 return FiresReply;
 
@@ -135,7 +135,7 @@ internal static partial class MNK
 
         protected override uint Invoke(uint actionID)
         {
-            if (actionID is not (Bootshine or LeapingOpo))
+            if (actionID is not (Bootshine or LeapingOpo or DragonKick))
                 return actionID;
 
             if (IsEnabled(CustomComboPreset.MNK_STUseMeditation) &&
@@ -150,7 +150,7 @@ internal static partial class MNK
                 !HasEffect(Buffs.FormlessFist) && !HasEffect(Buffs.PerfectBalance))
                 return FormShift;
 
-            if (IsEnabled(CustomComboPreset.MNK_STUseOpener))
+            if (IsEnabled(CustomComboPreset.MNK_STUseOpener) && actionID is not DragonKick)
                 if (Opener().FullOpener(ref actionID))
                 {
                     if (IsOnCooldown(RiddleOfWind) &&
@@ -170,8 +170,10 @@ internal static partial class MNK
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_STUseROF) &&
                 ActionReady(RiddleOfFire) &&
+                (!ActionReady(Brotherhood) || HasEffect(Buffs.Brotherhood)) &&
                 CanDelayedWeave() &&
-                GetTargetHPPercent() >= Config.MNK_ST_RiddleOfFire_HP)
+                GetTargetHPPercent() >= Config.MNK_ST_RiddleOfFire_HP &&
+                actionID is not DragonKick)
                 return RiddleOfFire;
 
             // OGCDs
@@ -187,7 +189,9 @@ internal static partial class MNK
                 {
                     if (IsEnabled(CustomComboPreset.MNK_STUseBrotherhood) &&
                         ActionReady(Brotherhood) &&
-                        GetTargetHPPercent() >= Config.MNK_ST_Brotherhood_HP)
+                        ((HasEffect(Buffs.PerfectBalance) && GetBuffStacks(Buffs.PerfectBalance) <= 1) || GetRemainingCharges(Buffs.PerfectBalance) <= 1) &&
+                        GetTargetHPPercent() >= Config.MNK_ST_Brotherhood_HP &&
+                        actionID is not DragonKick)
                         return Brotherhood;
 
                     if (IsEnabled(CustomComboPreset.MNK_STUseROW) &&
@@ -198,7 +202,8 @@ internal static partial class MNK
 
                 //Perfect Balance
                 if (IsEnabled(CustomComboPreset.MNK_STUsePerfectBalance) &&
-                    UsePerfectBalance())
+                    UsePerfectBalance() &&
+                    actionID is not DragonKick)
                     return PerfectBalance;
 
                 if (IsEnabled(CustomComboPreset.MNK_ST_ComboHeals))
@@ -219,7 +224,7 @@ internal static partial class MNK
             // GCDs
             if (HasEffect(Buffs.FormlessFist))
                 return Gauge.OpoOpoFury == 0
-                    ? DragonKick
+                    ? OriginalHook(DragonKick)
                     : OriginalHook(Bootshine);
 
             // Masterful Blitz
@@ -236,7 +241,7 @@ internal static partial class MNK
 
                 if (!LunarNadi || BothNadisOpen || (!SolarNadi && !LunarNadi))
                     return Gauge.OpoOpoFury == 0
-                        ? DragonKick
+                        ? OriginalHook(DragonKick)
                         : OriginalHook(Bootshine);
 
                 #endregion
@@ -245,20 +250,20 @@ internal static partial class MNK
 
                 if (!SolarNadi && !BothNadisOpen)
                 {
-                    if (CoeurlChakra == 0)
-                        return Gauge.CoeurlFury == 0
-                            ? Demolish
-                            : OriginalHook(SnapPunch);
-
                     if (RaptorChakra == 0)
                         return Gauge.RaptorFury == 0
                             ? TwinSnakes
                             : OriginalHook(TrueStrike);
-
+                    
                     if (OpoOpoChakra == 0)
                         return Gauge.OpoOpoFury == 0
-                            ? DragonKick
+                            ? OriginalHook(DragonKick)
                             : OriginalHook(Bootshine);
+
+                    if (CoeurlChakra == 0)
+                        return Gauge.CoeurlFury == 0
+                            ? Demolish
+                            : OriginalHook(SnapPunch);
                 }
 
                 #endregion
@@ -266,13 +271,12 @@ internal static partial class MNK
 
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs))
             {
-                if (IsEnabled(CustomComboPreset.MNK_STUseROF) &&
-                    IsEnabled(CustomComboPreset.MNK_STUseFiresReply) &&
+                if (IsEnabled(CustomComboPreset.MNK_STUseFiresReply) &&
                     HasEffect(Buffs.FiresRumination) &&
                     !HasEffect(Buffs.PerfectBalance) &&
                     !HasEffect(Buffs.FormlessFist) &&
                     (JustUsed(OriginalHook(Bootshine)) ||
-                     JustUsed(DragonKick) ||
+                     JustUsed(OriginalHook(DragonKick)) ||
                      GetBuffRemainingTime(Buffs.FiresRumination) < 4))
                     return FiresReply;
 
@@ -596,7 +600,7 @@ internal static partial class MNK
 
         protected override uint Invoke(uint actionID) =>
             actionID is RiddleOfFire &&
-            ActionReady(Brotherhood) && IsOnCooldown(RiddleOfFire)
+            (ActionReady(Brotherhood) || GetCooldownRemainingTime(Brotherhood) < GetCooldownRemainingTime(RiddleOfFire)
                 ? Brotherhood
                 : actionID;
     }
@@ -609,8 +613,8 @@ internal static partial class MNK
         {
             if (IsEnabled(CustomComboPreset.MNK_BC_OPOOPO) &&
                 actionID is Bootshine or LeapingOpo)
-                return Gauge.OpoOpoFury == 0 && LevelChecked(DragonKick)
-                    ? DragonKick
+                return Gauge.OpoOpoFury == 0 && LevelChecked(OriginalHook(DragonKick))
+                    ? OriginalHook(DragonKick)
                     : OriginalHook(Bootshine);
 
             if (IsEnabled(CustomComboPreset.MNK_BC_RAPTOR) &&
