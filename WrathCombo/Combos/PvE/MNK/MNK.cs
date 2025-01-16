@@ -114,8 +114,7 @@ internal static partial class MNK
                 !HasEffect(Buffs.PerfectBalance) &&
                 !HasEffect(Buffs.FormlessFist) &&
                 (JustUsed(OriginalHook(Bootshine)) ||
-                 JustUsed(OriginalHook(DragonKick)) ||
-                 GetBuffRemainingTime(Buffs.FiresRumination) < 4))
+                 JustUsed(OriginalHook(DragonKick)))
                 return FiresReply;
 
             if (HasEffect(Buffs.WindsRumination) &&
