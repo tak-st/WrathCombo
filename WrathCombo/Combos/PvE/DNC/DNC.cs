@@ -90,7 +90,8 @@ internal partial class DNC
                 !HasEffect(Buffs.FinishingMoveReady) &&
                 (IsOffCooldown(Flourish) ||
                  GetCooldownRemainingTime(Flourish) > 5) &&
-                !HasEffect(Buffs.TechnicalFinish);
+                !HasEffect(Buffs.TechnicalFinish) &&
+                !HasEffect(Buffs.LastDanceReady);
 
             #endregion
 
@@ -101,6 +102,17 @@ internal partial class DNC
                 ActionReady(ClosedPosition) &&
                 !HasEffect(Buffs.ClosedPosition) &&
                 (GetPartyMembers().Count > 1 || HasCompanionPresent()) &&
+                !InAutoMode(true, false)) // Disabled in Auto-Rotation
+                // todo: do not disable for auto-rotation, provide targeting
+                return ClosedPosition;
+
+            // Dance Partner (InCombat)
+            if (IsEnabled(CustomComboPreset.DNC_ST_Adv_Partner) && InCombat() &&
+                CanWeave() &&
+                ActionReady(ClosedPosition) &&
+                !HasEffect(Buffs.ClosedPosition) &&
+                (GetPartyMembers().Count > 1 || HasCompanionPresent()) &&
+                GetCooldownRemainingTime(StandardStep) < 3 &&
                 !InAutoMode(true, false)) // Disabled in Auto-Rotation
                 // todo: do not disable for auto-rotation, provide targeting
                 return ClosedPosition;
@@ -150,15 +162,13 @@ internal partial class DNC
             #region Dance Fills
 
             // ST Standard (Dance) Steps & Fill
-            if (IsEnabled(CustomComboPreset.DNC_ST_Adv_SS) &&
-                HasEffect(Buffs.StandardStep))
+            if (HasEffect(Buffs.StandardStep))
                 return Gauge.CompletedSteps < 2
                     ? Gauge.NextStep
                     : StandardFinish2;
 
             // ST Technical (Dance) Steps & Fill
-            if ((IsEnabled(CustomComboPreset.DNC_ST_Adv_TS)) &&
-                HasEffect(Buffs.TechnicalStep))
+            if (HasEffect(Buffs.TechnicalStep))
                 return Gauge.CompletedSteps < 4
                     ? Gauge.NextStep
                     : TechnicalFinish4;
@@ -300,6 +310,23 @@ internal partial class DNC
             if (needToTech)
                 return TechnicalStep;
 
+            // ST Dance of the Dawn
+            if (IsEnabled(CustomComboPreset.DNC_ST_Adv_DawnDance) &&
+                HasEffect(Buffs.DanceOfTheDawnReady) &&
+                LevelChecked(DanceOfTheDawn) &&
+                (GetCooldownRemainingTime(TechnicalStep) > 5 ||
+                 IsOffCooldown(TechnicalStep)) && // Tech is up
+                (Gauge.Esprit >= 90)) // emergency use
+                return OriginalHook(DanceOfTheDawn);
+
+            // ST Standard Step (Finishing Move)
+            if (needToStandardOrFinish && needToFinish)
+                return OriginalHook(FinishingMove);
+
+            // ST Standard Step
+            if (needToStandardOrFinish && needToStandard)
+                return StandardStep;
+
             // ST Last Dance
             if (IsEnabled(CustomComboPreset.DNC_ST_Adv_LD) && // Enabled
                 HasEffect(Buffs.LastDanceReady) && // Ready
@@ -311,14 +338,6 @@ internal partial class DNC
                  GetBuffRemainingTime(Buffs.LastDanceReady) <
                  4)) // Or last second
                 return LastDance;
-
-            // ST Standard Step (Finishing Move)
-            if (needToStandardOrFinish && needToFinish)
-                return OriginalHook(FinishingMove);
-
-            // ST Standard Step
-            if (needToStandardOrFinish && needToStandard)
-                return StandardStep;
 
             // Emergency Starfall usage
             if (HasEffect(Buffs.FlourishingStarfall) &&
@@ -346,7 +365,8 @@ internal partial class DNC
                      .DNC_ST_Adv_SaberThreshold || // above esprit threshold use
                  (HasEffect(Buffs
                       .TechnicalFinish) && // will overcap with Tillana if not used
-                  !tillanaDriftProtectionActive && Gauge.Esprit >= 50)))
+                  !tillanaDriftProtectionActive && Gauge.Esprit >= 50 &&
+                (!HasEffect(Buffs.FlourishingFinish) || GetBuffRemainingTime(Buffs.FlourishingFinish) > 4))))
                 return LevelChecked(DanceOfTheDawn) &&
                        HasEffect(Buffs.DanceOfTheDawnReady)
                     ? OriginalHook(DanceOfTheDawn)
@@ -603,6 +623,14 @@ internal partial class DNC
             if (needToTech)
                 return TechnicalStep;
 
+            // ST Standard Step (Finishing Move)
+            if (needToStandardOrFinish && needToFinish)
+                return OriginalHook(FinishingMove);
+
+            // ST Standard Step
+            if (needToStandardOrFinish && needToStandard)
+                return StandardStep;
+
             // ST Last Dance
             if (HasEffect(Buffs.LastDanceReady) && // Ready
                 (HasEffect(Buffs.TechnicalFinish) || // Has Tech
@@ -613,15 +641,7 @@ internal partial class DNC
                  GetBuffRemainingTime(Buffs.LastDanceReady) <
                  4)) // Or last second
                 return LastDance;
-
-            // ST Standard Step (Finishing Move)
-            if (needToStandardOrFinish && needToFinish)
-                return OriginalHook(FinishingMove);
-
-            // ST Standard Step
-            if (needToStandardOrFinish && needToStandard)
-                return StandardStep;
-
+            
             // Emergency Starfall usage
             if (HasEffect(Buffs.FlourishingStarfall) &&
                 GetBuffRemainingTime(Buffs.FlourishingStarfall) < 4)
@@ -641,7 +661,8 @@ internal partial class DNC
 
             // ST Saber Dance
             if (LevelChecked(SaberDance) &&
-                Gauge.Esprit >= 50)
+                Gauge.Esprit >= 50 &&
+                (!HasEffect(Buffs.FlourishingFinish) || GetBuffRemainingTime(Buffs.FlourishingFinish) > 4))
                 return LevelChecked(DanceOfTheDawn) &&
                        HasEffect(Buffs.DanceOfTheDawnReady)
                     ? OriginalHook(DanceOfTheDawn)
@@ -720,7 +741,8 @@ internal partial class DNC
                 !HasEffect(Buffs.FinishingMoveReady) &&
                 (IsOffCooldown(Flourish) ||
                  GetCooldownRemainingTime(Flourish) > 5) &&
-                !HasEffect(Buffs.TechnicalFinish);
+                !HasEffect(Buffs.TechnicalFinish) &&
+                !HasEffect(Buffs.LastDanceReady);
 
             #endregion
 
@@ -736,20 +758,29 @@ internal partial class DNC
                 // todo: do not disable for auto-rotation, provide targeting
                 return ClosedPosition;
 
+            // Dance Partner (InCombat)
+            if (IsEnabled(CustomComboPreset.DNC_ST_Adv_Partner) && InCombat() &&
+                CanWeave() &&
+                ActionReady(ClosedPosition) &&
+                !HasEffect(Buffs.ClosedPosition) &&
+                (GetPartyMembers().Count > 1 || HasCompanionPresent()) &&
+                GetCooldownRemainingTime(StandardStep) < 3 &&
+                !InAutoMode(true, false)) // Disabled in Auto-Rotation
+                // todo: do not disable for auto-rotation, provide targeting
+                return ClosedPosition;
+
             #endregion
 
             #region Dance Fills
 
             // AoE Standard (Dance) Steps & Fill
-            if (IsEnabled(CustomComboPreset.DNC_AoE_Adv_SS) &&
-                HasEffect(Buffs.StandardStep))
+            if (HasEffect(Buffs.StandardStep))
                 return Gauge.CompletedSteps < 2
                     ? Gauge.NextStep
                     : StandardFinish2;
 
             // AoE Technical (Dance) Steps & Fill
-            if (IsEnabled(CustomComboPreset.DNC_AoE_Adv_TS) &&
-                HasEffect(Buffs.TechnicalStep))
+            if (HasEffect(Buffs.TechnicalStep))
                 return Gauge.CompletedSteps < 4
                     ? Gauge.NextStep
                     : TechnicalFinish4;
@@ -872,6 +903,23 @@ internal partial class DNC
             // AoE Technical Step
             if (needToTech)
                 return TechnicalStep;
+            
+            // ST Dance of the Dawn
+            if (IsEnabled(CustomComboPreset.DNC_ST_Adv_DawnDance) &&
+                HasEffect(Buffs.DanceOfTheDawnReady) &&
+                LevelChecked(DanceOfTheDawn) &&
+                (GetCooldownRemainingTime(TechnicalStep) > 5 ||
+                 IsOffCooldown(TechnicalStep)) && // Tech is up
+                (Gauge.Esprit >= 90)) // emergency use
+                return OriginalHook(DanceOfTheDawn);
+
+            // AoE Standard Step (Finishing Move)
+            if (needToStandardOrFinish && needToFinish)
+                return OriginalHook(FinishingMove);
+
+            // AoE Standard Step
+            if (needToStandardOrFinish && needToStandard)
+                return StandardStep;
 
             // AoE Last Dance
             if (IsEnabled(CustomComboPreset.DNC_AoE_Adv_LD) && // Enabled
@@ -884,14 +932,6 @@ internal partial class DNC
                  GetBuffRemainingTime(Buffs.LastDanceReady) <
                  4)) // Or last second
                 return LastDance;
-
-            // AoE Standard Step (Finishing Move)
-            if (needToStandardOrFinish && needToFinish)
-                return OriginalHook(FinishingMove);
-
-            // AoE Standard Step
-            if (needToStandardOrFinish && needToStandard)
-                return StandardStep;
 
             // Emergency Starfall usage
             if (HasEffect(Buffs.FlourishingStarfall) &&
@@ -921,7 +961,8 @@ internal partial class DNC
                      .DNC_AoE_Adv_SaberThreshold || // above esprit threshold use
                  (HasEffect(Buffs.TechnicalFinish) &&
                   Gauge.Esprit >=
-                  50)) && // will overcap with Tillana if not used
+                  50 &&
+                (!HasEffect(Buffs.FlourishingFinish) || GetBuffRemainingTime(Buffs.FlourishingFinish) > 4))) && // will overcap with Tillana if not used
                 ActionReady(SaberDance))
                 return SaberDance;
 
@@ -1005,7 +1046,8 @@ internal partial class DNC
                 !HasEffect(Buffs.FinishingMoveReady) &&
                 (IsOffCooldown(Flourish) ||
                  GetCooldownRemainingTime(Flourish) > 5) &&
-                !HasEffect(Buffs.TechnicalFinish);
+                !HasEffect(Buffs.TechnicalFinish) &&
+                !HasEffect(Buffs.LastDanceReady);
 
             #endregion
 
