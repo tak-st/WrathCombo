@@ -192,7 +192,7 @@ internal static partial class MNK
             if (IsEnabled(CustomComboPreset.MNK_STUseBrotherhood) &&
                 IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat() &&
                 (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.65) && 
-                ((HasEffect(Buffs.PerfectBalance) && GetBuffStacks(Buffs.PerfectBalance) <= 2) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 1) || GetRemainingCharges(PerfectBalance) <= 0) &&
+                ((HasEffect(Buffs.PerfectBalance) && (((GetBuffRemainingTime(Buffs.WindsRumination) <= 2 && GetCooldownRemainingTime(RiddleOfWind) > 17.35) && GetBuffStacks(Buffs.PerfectBalance) <= 2) || GetBuffStacks(Buffs.PerfectBalance) <= 1)) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 1) || GetRemainingCharges(PerfectBalance) <= 0) &&
                 GetTargetHPPercent() >= Config.MNK_ST_Brotherhood_HP &&
                 actionID is not DragonKick)
                 return Brotherhood;
@@ -311,7 +311,9 @@ internal static partial class MNK
                     GetTargetDistance() <= 20 &&
                     (JustUsed(OriginalHook(Bootshine)) ||
                      JustUsed(OriginalHook(DragonKick)) ||
-                     GetBuffRemainingTime(Buffs.FiresRumination) < 4))
+                     (HasEffect(Buffs.Brotherhood) && GetBuffRemainingTime(Buffs.Brotherhood) < 4) ||
+                     GetBuffRemainingTime(Buffs.FiresRumination) < 4)
+                    )
                     return FiresReply;
 
                 if (IsEnabled(CustomComboPreset.MNK_STUseWindsReply) &&
@@ -320,7 +322,10 @@ internal static partial class MNK
                     HasEffect(Buffs.RiddleOfWind) &&
                     HasBattleTarget() &&
                     GetTargetDistance() <= 10 &&
-                    GetBuffRemainingTime(Buffs.WindsRumination) < 6)
+                    (
+                        (HasEffect(Buffs.Brotherhood) && GetBuffRemainingTime(Buffs.Brotherhood) <= 2) ||
+                        GetBuffRemainingTime(Buffs.WindsRumination) < 6)
+                    )
                     return WindsReply;
             }
 

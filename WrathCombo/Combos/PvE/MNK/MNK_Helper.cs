@@ -147,8 +147,8 @@ internal static partial class MNK
                 return true;
 
             // Even window
-            if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD) || IsOffCooldown(Brotherhood)) &&
-                (GetCooldownRemainingTime(Brotherhood) <= GCD * 3.9 || HasEffect(Buffs.Brotherhood)))
+            if ((JustUsed(OriginalHook(Bootshine), GCD * 2) || JustUsed(OriginalHook(DragonKick), GCD * 2) || GetCooldownRemainingTime(Brotherhood) <= GCD * 1 + 0.65 || GetBuffRemainingTime(Buffs.WindsRumination) > 12 || GetCooldownRemainingTime(RiddleOfWind) < 20) &&
+                (GetCooldownRemainingTime(Brotherhood) <= GCD * 2 + 0.65 || HasEffect(Buffs.Brotherhood)))
                 return true;
 
             // Low level
