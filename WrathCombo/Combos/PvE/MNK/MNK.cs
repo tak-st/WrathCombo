@@ -202,7 +202,7 @@ internal static partial class MNK
                 (IsOffCooldown(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) <= 1.05) &&
                 !HasEffect(Buffs.RiddleOfFire) &&
                 (!IsOffCooldown(Brotherhood) || HasEffect(Buffs.Brotherhood)) &&
-                GetTargetHPPercent() >= Config.MNK_ST_RiddleOfFire_HP &&
+                ((!HasBattleTarget() && GetCooldownRemainingTime(Brotherhood) <= 63 && GetCooldownRemainingTime(Brotherhood) >= 56) || GetTargetHPPercent() >= Config.MNK_ST_RiddleOfFire_HP) &&
                 GetCooldownRemainingTime(Brotherhood) >= 15 &&
                 (GetCooldownRemainingTime(Brotherhood) >= 110 || HasEffect(Buffs.Brotherhood) || RemainingGCD <= 1) &&
                 actionID is not DragonKick)
