@@ -191,7 +191,7 @@ internal static partial class MNK
 
             if (IsEnabled(CustomComboPreset.MNK_STUseBrotherhood) &&
                 IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat() &&
-                (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.65) && 
+                (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.6) && 
                 ((HasEffect(Buffs.PerfectBalance) && (((GetBuffRemainingTime(Buffs.WindsRumination) <= 2 && GetCooldownRemainingTime(RiddleOfWind) > 17.35) && GetBuffStacks(Buffs.PerfectBalance) <= 2) || GetBuffStacks(Buffs.PerfectBalance) <= 1)) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 1) || GetRemainingCharges(PerfectBalance) <= 0) &&
                 GetTargetHPPercent() >= Config.MNK_ST_Brotherhood_HP &&
                 actionID is not DragonKick)
@@ -245,7 +245,7 @@ internal static partial class MNK
                 }
 
                 if (IsEnabled(CustomComboPreset.MNK_STUseTheForbiddenChakra) &&
-                    Gauge.Chakra >= 5 && InCombat() && HasBattleTarget() && InMeleeRange() &&
+                    Gauge.Chakra >= 5 && InCombat() && HasBattleTarget() && InMeleeRange() && GetCooldownRemainingTime(Brotherhood) >= GCD &&
                     LevelChecked(SteeledMeditation))
                     return OriginalHook(SteeledMeditation);
             }
