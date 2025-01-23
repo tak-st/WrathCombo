@@ -1,4 +1,4 @@
-﻿using Dalamud.Game.ClientState.JobGauge.Enums;
+~﻿using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using System.Collections.Generic;
 using System.Linq;
@@ -143,7 +143,8 @@ internal static partial class MNK
             // Odd window
             if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD)) &&
                 !JustUsed(PerfectBalance, 20) &&
-                HasEffect(Buffs.RiddleOfFire) && !HasEffect(Buffs.Brotherhood))
+                HasEffect(Buffs.RiddleOfFire) && !HasEffect(Buffs.Brotherhood) &&
+                !BothNadisOpen)
                 return true;
 
             // Even window
