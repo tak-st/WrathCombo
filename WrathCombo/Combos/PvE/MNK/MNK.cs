@@ -271,7 +271,7 @@ internal static partial class MNK
             {
                 #region Open Lunar
 
-                if (!LunarNadi || BothNadisOpen || (!SolarNadi && !LunarNadi))
+                if ((SolarNadi && !LunarNadi) || BothNadisOpen || (!SolarNadi && !LunarNadi && (GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood))) || OpoOpoChakra >= 2)
                     return Gauge.OpoOpoFury == 0
                         ? OriginalHook(DragonKick)
                         : OriginalHook(Bootshine);
