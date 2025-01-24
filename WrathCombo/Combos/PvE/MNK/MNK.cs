@@ -324,6 +324,7 @@ internal static partial class MNK
                     GetTargetDistance() <= 10 &&
                     (
                         (HasEffect(Buffs.Brotherhood) && GetBuffRemainingTime(Buffs.Brotherhood) <= 2) ||
+                        (HasEffect(Buffs.RiddleOfFire) && GetBuffRemainingTime(Buffs.RiddleOfFire) <= 2) ||
                         GetBuffRemainingTime(Buffs.WindsRumination) < 6)
                     )
                     return WindsReply;
