@@ -94,6 +94,16 @@ internal partial class MNK
                 return true;
         }
 
+        if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasBattleTarget() && HasEffect(Buffs.RiddleOfFire)) {
+            // Odd window
+            if (!JustUsed(PerfectBalance, 20) && !HasEffect(Buffs.Brotherhood) && !BothNadisOpen)
+                return true;
+            
+            // Even window
+            if (HasEffect(Buffs.Brotherhood))
+                return true;
+        }
+
         return false;
     }
 

@@ -189,8 +189,9 @@ internal partial class MNK
 
             if (IsEnabled(CustomComboPreset.MNK_STUseBrotherhood) &&
                 IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat() &&
+                HasBattleTarget() && InMeleeRange() &&
                 (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.6) && 
-                ((HasEffect(Buffs.PerfectBalance) && (((GetBuffRemainingTime(Buffs.WindsRumination) <= 2 && GetCooldownRemainingTime(RiddleOfWind) > 17.35) && GetBuffStacks(Buffs.PerfectBalance) <= 2) || GetBuffStacks(Buffs.PerfectBalance) <= 1)) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 1) || GetRemainingCharges(PerfectBalance) <= 0) &&
+                ((HasEffect(Buffs.PerfectBalance) && (((JustUsed(Brotherhood, 124) && (GetBuffRemainingTime(Buffs.WindsRumination) <= 2 && GetCooldownRemainingTime(RiddleOfWind) > 17.35)) && GetBuffStacks(Buffs.PerfectBalance) <= 2) || GetBuffStacks(Buffs.PerfectBalance) <= 1)) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 1) || GetRemainingCharges(PerfectBalance) <= 0) &&
                 GetTargetHPPercent() >= Config.MNK_ST_Brotherhood_HP &&
                 actionID is not DragonKick)
                 return Brotherhood;
@@ -200,14 +201,14 @@ internal partial class MNK
                 (IsOffCooldown(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) <= 1.05) &&
                 !HasEffect(Buffs.RiddleOfFire) &&
                 (!IsOffCooldown(Brotherhood) || HasEffect(Buffs.Brotherhood)) &&
-                ((!HasBattleTarget() && GetCooldownRemainingTime(Brotherhood) <= 63 && GetCooldownRemainingTime(Brotherhood) >= 56) || GetTargetHPPercent() >= Config.MNK_ST_RiddleOfFire_HP) &&
+                ((!HasBattleTarget() && GetCooldownRemainingTime(Brotherhood) <= 61 && GetCooldownRemainingTime(Brotherhood) >= 56) || GetTargetHPPercent() >= Config.MNK_ST_RiddleOfFire_HP) &&
                 ((GetCooldownRemainingTime(Brotherhood) >= 54 && GetCooldownRemainingTime(Brotherhood) <= 66) || (GetCooldownRemainingTime(Brotherhood) >= 114)) &&
                 (GetCooldownRemainingTime(Brotherhood) >= 110 || HasEffect(Buffs.Brotherhood) || RemainingGCD <= 1) &&
                 actionID is not DragonKick)
                 return RiddleOfFire;
 
             // OGCDs
-            if (CanWeave())
+            if (CanWeave() || !HasBattleTarget())
             {
                 //Variant Rampart
                 if (IsEnabled(CustomComboPreset.MNK_Variant_Rampart) &&
@@ -255,24 +256,36 @@ internal partial class MNK
                     : OriginalHook(Bootshine);
 
             // Masterful Blitz
-            if (IsEnabled(CustomComboPreset.MNK_STUseMasterfulBlitz) &&
-                LevelChecked(MasterfulBlitz) &&
-                !HasEffect(Buffs.PerfectBalance) &&
-                !IsOriginal(MasterfulBlitz) &&
-                HasBattleTarget() && InMeleeRange() &&
-                GetCooldownRemainingTime(Brotherhood) >= GCD * 3 &&
-                (GetCooldownRemainingTime(Brotherhood) <= 120 - (GCD * 2) || GetCooldownRemainingTime(RiddleOfFire) >= 4))
+            if (
+                    IsEnabled(CustomComboPreset.MNK_STUseMasterfulBlitz) &&
+                    LevelChecked(MasterfulBlitz) &&
+                    !HasEffect(Buffs.PerfectBalance) &&
+                    !IsOriginal(MasterfulBlitz) &&
+                    (
+                        (!BothNadisOpen && Gauge.BlitzTimeRemaining <= 4) || 
+                        (
+                            HasBattleTarget() && InMeleeRange() &&
+                            GetCooldownRemainingTime(Brotherhood) >= GCD * 3 &&
+                            (
+                                GetCooldownRemainingTime(Brotherhood) <= 120 - (GCD * 2) ||
+                                GetCooldownRemainingTime(RiddleOfFire) >= 4
+                            )
+                        )
+                    )
+                )
                 return OriginalHook(MasterfulBlitz);
 
             // Perfect Balance
-            if (HasEffect(Buffs.PerfectBalance) && HasBattleTarget() && InMeleeRange())
+            if (HasEffect(Buffs.PerfectBalance) && (!HasBattleTarget() || InMeleeRange()))
             {
                 #region Open Lunar
 
                 if ((SolarNadi && !LunarNadi) || BothNadisOpen || (!SolarNadi && !LunarNadi && (GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood))) || OpoOpoChakra >= 2)
-                    return Gauge.OpoOpoFury == 0
-                        ? OriginalHook(DragonKick)
-                        : OriginalHook(Bootshine);
+                    return HasBattleTarget() ?
+                        Gauge.OpoOpoFury == 0
+                            ? OriginalHook(DragonKick)
+                            : OriginalHook(Bootshine)
+                        : OriginalHook(ArmOfTheDestroyer);
 
                 #endregion
 
@@ -281,19 +294,25 @@ internal partial class MNK
                 if (!SolarNadi && !BothNadisOpen)
                 {
                     if (OpoOpoChakra == 0)
-                        return Gauge.OpoOpoFury == 0
-                            ? OriginalHook(DragonKick)
-                            : OriginalHook(Bootshine);
+                        return HasBattleTarget() ?
+                            Gauge.OpoOpoFury == 0
+                                ? OriginalHook(DragonKick)
+                                : OriginalHook(Bootshine);
+                            : OriginalHook(ArmOfTheDestroyer);
                     
                     if (RaptorChakra == 0)
-                        return Gauge.RaptorFury == 0
-                            ? TwinSnakes
-                            : OriginalHook(TrueStrike);
+                        return HasBattleTarget() ?
+                            Gauge.RaptorFury == 0
+                                ? TwinSnakes
+                                : OriginalHook(TrueStrike);
+                            : FourPointFury;
 
                     if (CoeurlChakra == 0)
-                        return Gauge.CoeurlFury == 0
-                            ? Demolish
-                            : OriginalHook(SnapPunch);
+                        return HasBattleTarget() ?
+                            Gauge.CoeurlFury == 0
+                                ? Demolish
+                                : OriginalHook(SnapPunch);
+                            : Rockbreaker;
                 }
 
                 #endregion
