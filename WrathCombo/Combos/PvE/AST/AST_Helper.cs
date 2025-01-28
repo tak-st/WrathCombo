@@ -69,6 +69,7 @@ internal static partial class AST
         CelestialOpposition = 16553,
         CelestialIntersection = 16556,
         Horoscope = 16557,
+        HoroscopeHeal = 16558,
         Exaltation = 25873,
         Macrocosmos = 25874,
         Synastry = 3612,
@@ -112,7 +113,8 @@ internal static partial class AST
             Lightspeed = 841,
             SelfSynastry = 845,
             TargetSynastry = 846,
-            Divining = 3893;
+            Divining = 3893,
+            EarthlyDominance = 1224;
     }
 
     internal static class Debuffs

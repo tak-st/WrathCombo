@@ -202,7 +202,7 @@ namespace WrathCombo.CustomComboNS
                             DelayedStep = OpenerStep;
                         }
 
-                        if ((DateTime.Now - DelayedAt).TotalSeconds < HoldDelay && !InCombat())
+                        if ((DateTime.Now - DelayedAt).TotalSeconds < HoldDelay && !PartyInCombat())
                         {
                             ActionWatching.TimeLastActionUsed = DateTime.Now; //Hacky workaround for TN jobs
                             actionID = 11;
@@ -216,7 +216,7 @@ namespace WrathCombo.CustomComboNS
                         CurrentOpenerAction = OpenerActions[OpenerStep - 1];
                     }
 
-                    while (OpenerStep > 1 && !ActionReady(CurrentOpenerAction) && ActionWatching.TimeSinceLastAction.TotalSeconds > 1.5)
+                    while (OpenerStep > 1 && !ActionReady(CurrentOpenerAction) && ActionWatching.TimeSinceLastAction.TotalSeconds > Math.Max(1.5, GCDTotal))
                     {
                         if (OpenerStep >= OpenerActions.Count)
                             break;
