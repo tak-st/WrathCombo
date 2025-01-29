@@ -96,7 +96,7 @@ internal partial class MNK
 
         if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasBattleTarget() && HasEffect(Buffs.RiddleOfFire)) {
             // Odd window
-            if (!JustUsed(PerfectBalance, 20) && !HasEffect(Buffs.Brotherhood) && !BothNadisOpen && GetBuffRemainingTime(Buffs.RiddleOfFire) <= 18)
+            if (!JustUsed(PerfectBalance, 20) && !HasEffect(Buffs.Brotherhood) && !BothNadisOpen && GetBuffRemainingTime(Buffs.RiddleOfFire) <= 20 - GCD)
                 return true;
             
             // Even window
