@@ -250,7 +250,7 @@ internal partial class MNK
             }
 
             // GCDs
-            if (HasEffect(Buffs.FormlessFist) && HasBattleTarget() && InMeleeRange())
+            if (HasEffect(Buffs.FormlessFist) && HasBattleTarget() && InMeleeRange() && !(!BothNadisOpen && Gauge.BlitzTimeRemaining <= 4))
                 return Gauge.OpoOpoFury == 0
                     ? OriginalHook(DragonKick)
                     : OriginalHook(Bootshine);
@@ -297,21 +297,21 @@ internal partial class MNK
                         return HasBattleTarget() ?
                             Gauge.OpoOpoFury == 0
                                 ? OriginalHook(DragonKick)
-                                : OriginalHook(Bootshine);
+                                : OriginalHook(Bootshine)
                             : OriginalHook(ArmOfTheDestroyer);
                     
                     if (RaptorChakra == 0)
                         return HasBattleTarget() ?
                             Gauge.RaptorFury == 0
                                 ? TwinSnakes
-                                : OriginalHook(TrueStrike);
+                                : OriginalHook(TrueStrike)
                             : FourPointFury;
 
                     if (CoeurlChakra == 0)
                         return HasBattleTarget() ?
                             Gauge.CoeurlFury == 0
                                 ? Demolish
-                                : OriginalHook(SnapPunch);
+                                : OriginalHook(SnapPunch)
                             : Rockbreaker;
                 }
 
