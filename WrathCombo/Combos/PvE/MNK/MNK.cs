@@ -162,9 +162,8 @@ internal partial class MNK
 
             if (IsEnabled(CustomComboPreset.MNK_STUseFormShift) &&
                 (!InCombat() || !HasBattleTarget() || !InMeleeRange()) && LevelChecked(FormShift) &&
-                !HasEffect(Buffs.FormlessFist) && !HasEffect(Buffs.PerfectBalance))
-                return FormShift;
-            
+                !HasEffect(Buffs.FormlessFist) && !HasEffect(Buffs.PerfectBalance) && (!HasEffect(Buffs.RiddleOfFire) || GetBuffRemainingTime(Buffs.RiddleOfFire) <= 18))
+                return FormShift;            
             if (IsEnabled(CustomComboPreset.MNK_STUseMeditation) &&
                 (!InCombat() || !HasBattleTarget() || !InMeleeRange()) &&
                 Gauge.Chakra < 5 &&
@@ -250,7 +249,7 @@ internal partial class MNK
             }
 
             // GCDs
-            if (HasEffect(Buffs.FormlessFist) && HasBattleTarget() && InMeleeRange())
+            if (HasEffect(Buffs.FormlessFist) && HasBattleTarget() && InMeleeRange() && !(!BothNadisOpen && Gauge.BlitzTimeRemaining <= 4))
                 return Gauge.OpoOpoFury == 0
                     ? OriginalHook(DragonKick)
                     : OriginalHook(Bootshine);
@@ -262,7 +261,7 @@ internal partial class MNK
                     !HasEffect(Buffs.PerfectBalance) &&
                     !IsOriginal(MasterfulBlitz) &&
                     (
-                        (!BothNadisOpen && Gauge.BlitzTimeRemaining <= 4) || 
+                        (!BothNadisOpen && Gauge.BlitzTimeRemaining <= 4000) || 
                         (
                             HasBattleTarget() && InMeleeRange() &&
                             GetCooldownRemainingTime(Brotherhood) >= GCD * 3 &&
@@ -297,21 +296,21 @@ internal partial class MNK
                         return HasBattleTarget() ?
                             Gauge.OpoOpoFury == 0
                                 ? OriginalHook(DragonKick)
-                                : OriginalHook(Bootshine);
+                                : OriginalHook(Bootshine)
                             : OriginalHook(ArmOfTheDestroyer);
                     
                     if (RaptorChakra == 0)
                         return HasBattleTarget() ?
                             Gauge.RaptorFury == 0
                                 ? TwinSnakes
-                                : OriginalHook(TrueStrike);
+                                : OriginalHook(TrueStrike)
                             : FourPointFury;
 
                     if (CoeurlChakra == 0)
                         return HasBattleTarget() ?
                             Gauge.CoeurlFury == 0
                                 ? Demolish
-                                : OriginalHook(SnapPunch);
+                                : OriginalHook(SnapPunch)
                             : Rockbreaker;
                 }
 
@@ -350,8 +349,8 @@ internal partial class MNK
             // Standard Beast Chakras
             return DetermineCoreAbility(actionID, IsEnabled(CustomComboPreset.MNK_STUseTrueNorth) &&
                                         (GetRemainingCharges(TrueNorth) >= 2 ||
-                                         (GetRemainingCharges(TrueNorth) >= 1 && GetCooldownRemainingTime(Brotherhood) >= GetCooldownRemainingTime(TrueNorth)) ||
-                                         HasEffect(Buffs.Brotherhood)));
+                                         (GetRemainingCharges(TrueNorth) >= 1 && (GetCooldownRemainingTime(Brotherhood) <= 45 || GetCooldownRemainingTime(RiddleOfFire) >= GetCooldownRemainingTime(TrueNorth))) ||
+                                         HasEffect(Buffs.RiddleOfFire) || HasEffect(Buffs.Brotherhood)));
         }
     }
 

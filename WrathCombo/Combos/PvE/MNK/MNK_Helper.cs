@@ -83,8 +83,8 @@ internal partial class MNK
                 return true;
 
             // Even window
-            if ((JustUsed(OriginalHook(Bootshine), GCD * 2) || JustUsed(OriginalHook(DragonKick), GCD * 2) || GetCooldownRemainingTime(Brotherhood) <= GCD * 1 + 0.65 || GetBuffRemainingTime(Buffs.WindsRumination) > 12 || GetCooldownRemainingTime(RiddleOfWind) < 20) &&
-                (GetCooldownRemainingTime(Brotherhood) <= GCD * 2 + 0.65 || HasEffect(Buffs.Brotherhood)))
+            if ((JustUsed(OriginalHook(Bootshine), GCD * 2) || JustUsed(OriginalHook(DragonKick), GCD * 2) || GetCooldownRemainingTime(Brotherhood) <= GCD * 1.8 || GetBuffRemainingTime(Buffs.WindsRumination) > 12 || GetCooldownRemainingTime(RiddleOfWind) < 20) &&
+                (GetCooldownRemainingTime(Brotherhood) <= GCD * 2.8 || HasEffect(Buffs.Brotherhood)))
                 return true;
 
             // Low level
@@ -96,7 +96,7 @@ internal partial class MNK
 
         if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasBattleTarget() && HasEffect(Buffs.RiddleOfFire)) {
             // Odd window
-            if (!JustUsed(PerfectBalance, 20) && !HasEffect(Buffs.Brotherhood) && !BothNadisOpen)
+            if (!JustUsed(PerfectBalance, 20) && !HasEffect(Buffs.Brotherhood) && !BothNadisOpen && GetBuffRemainingTime(Buffs.RiddleOfFire) <= 20 - GCD)
                 return true;
             
             // Even window
