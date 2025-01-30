@@ -113,6 +113,10 @@ internal partial class WHM
 
                 if (lucidEnabled && lucidReady)
                     return All.LucidDreaming;
+
+                if (GetRemainingCharges(DivineBenison) == 2) {
+                    return DivineBenison;
+                }
             }
 
             if (InCombat())
@@ -147,10 +151,14 @@ internal partial class WHM
                     return AfflatusRapture;
 
                 if (IsEnabled(CustomComboPreset.WHM_ST_MainCombo_Misery_oGCD) && LevelChecked(AfflatusMisery) &&
-                    gauge.BloodLily >= 3)
+                    gauge.BloodLily >= 3 && GetCooldownRemainingTime(PresenceOfMind) >= ((17000 - gauge.LilyTimer) / 1000))
                     return AfflatusMisery;
 
                 return OriginalHook(Stone1);
+            } else {
+                if (IsEnabled(CustomComboPreset.WHM_ST_MainCombo_LilyOvercap) && LevelChecked(AfflatusRapture) &&
+                    (liliesFull || liliesNearlyFull))
+                    return AfflatusRapture;
             }
 
             return actionID;
@@ -330,6 +338,10 @@ internal partial class WHM
                 if (IsEnabled(CustomComboPreset.WHM_AoE_DPS_Lucid) && ActionReady(All.LucidDreaming) &&
                     LocalPlayer.CurrentMp <= Config.WHM_AoEDPS_Lucid)
                     return All.LucidDreaming;
+
+                if (GetRemainingCharges(DivineBenison) == 2) {
+                    return DivineBenison;
+                }
             }
 
             // Glare IV
@@ -343,7 +355,7 @@ internal partial class WHM
                 return AfflatusRapture;
 
             if (IsEnabled(CustomComboPreset.WHM_AoE_DPS_Misery) && LevelChecked(AfflatusMisery) &&
-                gauge.BloodLily >= 3 && HasBattleTarget())
+                gauge.BloodLily >= 3 && HasBattleTarget() && GetCooldownRemainingTime(PresenceOfMind) >= ((17000 - gauge.LilyTimer) / 1000))
                 return AfflatusMisery;
 
             return actionID;

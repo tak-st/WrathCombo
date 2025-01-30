@@ -298,6 +298,10 @@ internal partial class SGE
                     if (Config.SGE_ST_DPS_Movement[3] && ActionReady(Psyche))
                         return Psyche;
 
+                    // Phlegma
+                    if (InActionRange(phlegma) && LevelChecked(phlegma) && ActionReady(phlegma))
+                        return phlegma;
+
                     // Toxikon
                     if (Config.SGE_ST_DPS_Movement[0] && LevelChecked(Toxikon) && Gauge.HasAddersting())
                         return OriginalHook(Toxikon);
