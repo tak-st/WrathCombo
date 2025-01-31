@@ -46,37 +46,37 @@ internal partial class MNK
 
                 case CustomComboPreset.MNK_STUseBrotherhood:
                     DrawSliderInt(0, 100, MNK_ST_Brotherhood_HP,
-                        $"Stop Using {Brotherhood.ActionName()} When Target HP% is at or Below (Set to 0 to Disable This Check)");
+                        $"{Brotherhood.ActionName()} を使用する対象の最低HP% (0で無効)");
 
                     break;
 
                 case CustomComboPreset.MNK_STUseROF:
                     DrawSliderInt(0, 100, MNK_ST_RiddleOfFire_HP,
-                        $"Stop Using {RiddleOfFire.ActionName()} When Target HP% is at or Below (Set to 0 to Disable This Check)");
+                        $"{RiddleOfFire.ActionName()} を使用する対象の最低HP% (0で無効)");
 
                     break;
 
                 case CustomComboPreset.MNK_STUseROW:
                     DrawSliderInt(0, 100, MNK_ST_RiddleOfWind_HP,
-                        $"Stop Using {RiddleOfWind.ActionName()} When Target HP% is at or Below (Set to 0 to Disable This Check)");
+                        $"{RiddleOfWind.ActionName()} を使用する対象の最低HP% (0で無効)");
 
                     break;
 
                 case CustomComboPreset.MNK_AoEUseBrotherhood:
                     DrawSliderInt(0, 100, MNK_AoE_Brotherhood_HP,
-                        $"Stop Using {Brotherhood.ActionName()} When Target HP% is at or Below (Set to 0 to Disable This Check)");
+                        $"{Brotherhood.ActionName()} を使用する対象の最低HP% (0で無効)");
 
                     break;
 
                 case CustomComboPreset.MNK_AoEUseROF:
                     DrawSliderInt(0, 100, MNK_AoE_RiddleOfFire_HP,
-                        $"Stop Using {RiddleOfFire.ActionName()} When Target HP% is at or Below (Set to 0 to Disable This Check)");
+                        $"{RiddleOfFire.ActionName()} を使用する対象の最低HP% (0で無効)");
 
                     break;
 
                 case CustomComboPreset.MNK_AoEUseROW:
                     DrawSliderInt(0, 100, MNK_AoE_RiddleOfWind_HP,
-                        $"Stop Using {RiddleOfWind.ActionName()} When Target HP% is at or Below (Set to 0 to Disable This Check)");
+                        $"{RiddleOfWind.ActionName()} を使用する対象の最低HP% (0で無効)");
 
                     break;
 

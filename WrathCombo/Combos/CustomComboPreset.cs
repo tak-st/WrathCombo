@@ -2796,15 +2796,15 @@ public enum CustomComboPreset
     [AutoAction(false, false)]
     [ReplaceSkill(MNK.Bootshine, MNK.LeapingOpo)]
     [ConflictingCombos(MNK_ST_BeastChakras, MNK_ST_AdvancedMode)]
-    [CustomComboInfo("Simple Mode - Single Target",
-        "Replaces Bootshine with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.", MNK.JobID)]
+    [CustomComboInfo("シンプルモード - 単体",
+        "連撃をフルワンボタン単体ローテーションに置き換えます。\nこれはジョブの初心者に最適なオプションです。", MNK.JobID)]
     MNK_ST_SimpleMode = 9004,
 
     [AutoAction(true, false)]
     [ReplaceSkill(MNK.ArmOfTheDestroyer, MNK.ShadowOfTheDestroyer)]
     [ConflictingCombos(MNK_AOE_AdvancedMode)]
-    [CustomComboInfo("Simple Mode - AoE",
-        "Replaces Arms of the Destroyer with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.", MNK.JobID)]
+    [CustomComboInfo("シンプルモード - 範囲",
+        "壊神衝をフルワンボタン範囲ローテーションに置き換えます。\nこれはジョブの初心者に最適なオプションです。", MNK.JobID)]
     MNK_AOE_SimpleMode = 9003,
 
     #endregion
@@ -2814,64 +2814,64 @@ public enum CustomComboPreset
     [AutoAction(false, false)]
     [ReplaceSkill(MNK.Bootshine, MNK.LeapingOpo)]
     [ConflictingCombos(MNK_ST_BeastChakras, MNK_ST_SimpleMode)]
-    [CustomComboInfo("Advanced Mode - Single Target",
-        "Replaces Bootshine with a full one-button single target rotation.\nThese features are ideal if you want to customize the rotation.", MNK.JobID)]
+    [CustomComboInfo("アドバンストモード - 単体",
+        "連撃をフルワンボタン単体ローテーションに置き換えます。\nローテーションをカスタマイズしたい場合に最適な機能です。", MNK.JobID)]
     MNK_ST_AdvancedMode = 9005,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("Meditation Option", "Adds Meditation to the rotation", MNK.JobID)]
+    [CustomComboInfo("陰陽闘気", "陰陽闘気を自動で使用します。", MNK.JobID)]
     MNK_STUseMeditation = 9007,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("The Forbidden Chakra Option", "Adds The Forbidden Chakra to the rotation", MNK.JobID)]
+    [CustomComboInfo("陰陽闘気斬", "陰陽闘気斬を自動で使用します。", MNK.JobID)]
     MNK_STUseTheForbiddenChakra = 9012,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("Form Shift Option", "Adds Form Shift to the rotation", MNK.JobID)]
+    [CustomComboInfo("演武", "演武を自動で使用します。", MNK.JobID)]
     MNK_STUseFormShift = 9017,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("Opener Option", "Uses selected opener", MNK.JobID)]
+    [CustomComboInfo("開幕スキル回し", "選択された開幕スキル回しを使用します。", MNK.JobID)]
     MNK_STUseOpener = 9006,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("Buffs Option", "Adds selected buffs to the rotation", MNK.JobID)]
+    [CustomComboInfo("バフオプション", "選択されたバフを自動で使用します。", MNK.JobID)]
     MNK_STUseBuffs = 9008,
 
     [ParentCombo(MNK_STUseBuffs)]
-    [CustomComboInfo("Brotherhood Option", "Adds Brotherhood to the rotation", MNK.JobID)]
+    [CustomComboInfo("桃園結義", "桃園結義を自動で使用します。", MNK.JobID)]
     MNK_STUseBrotherhood = 9009,
 
     [ParentCombo(MNK_STUseBuffs)]
-    [CustomComboInfo("Riddle of Fire Option", "Adds Riddle of Fire to the rotation", MNK.JobID)]
+    [CustomComboInfo("紅蓮の極意", "紅蓮の極意を自動で使用します。", MNK.JobID)]
     MNK_STUseROF = 9011,
 
     [ParentCombo(MNK_STUseROF)]
-    [CustomComboInfo("Fire's Reply Option", "Adds Fire's Reply to the rotation", MNK.JobID)]
+    [CustomComboInfo("乾坤闘気弾", "乾坤闘気弾を自動で使用します。", MNK.JobID)]
     MNK_STUseFiresReply = 9016,
 
     [ParentCombo(MNK_STUseBuffs)]
-    [CustomComboInfo("Riddle of Wind Option", "Adds Riddle of Wind to the rotation", MNK.JobID)]
+    [CustomComboInfo("疾風の極意", "疾風の極意を自動で使用します。", MNK.JobID)]
     MNK_STUseROW = 9010,
 
     [ParentCombo(MNK_STUseROW)]
-    [CustomComboInfo("Wind's Reply Option", "Adds Wind's Reply to the rotation", MNK.JobID)]
+    [CustomComboInfo("絶空拳", "絶空拳を自動で使用します。", MNK.JobID)]
     MNK_STUseWindsReply = 9015,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("Perfect Balance Option", "Adds Perfect Balance to the rotation", MNK.JobID)]
+    [CustomComboInfo("踏鳴", "踏鳴を自動で使用します。", MNK.JobID)]
     MNK_STUsePerfectBalance = 9013,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo(" Masterful Blitz Option", "Adds Masterful Blitz to the rotation", MNK.JobID)]
+    [CustomComboInfo("必殺技", "必殺技を自動で使用します。", MNK.JobID)]
     MNK_STUseMasterfulBlitz = 9039,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("True North Option", "Adds True North dynamically, when not in positional, to the rotation", MNK.JobID)]
+    [CustomComboInfo("トゥルーノース", "ポジショナルでない場合に動的にトゥルーノースを自動で使用します。", MNK.JobID)]
     MNK_STUseTrueNorth = 9014,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", MNK.JobID)]
+    [CustomComboInfo("コンボヒールオプション", "ブラッドバスとセカンドウィンドを自動で使用します。", MNK.JobID)]
     MNK_ST_ComboHeals = 9018,
 
     #endregion
@@ -2881,56 +2881,56 @@ public enum CustomComboPreset
     [AutoAction(true, false)]
     [ReplaceSkill(MNK.ArmOfTheDestroyer, MNK.ShadowOfTheDestroyer)]
     [ConflictingCombos(MNK_AOE_SimpleMode)]
-    [CustomComboInfo("Advanced Mode - AoE",
-        "Replaces Arms of the Destroyer with a full one-button AoE rotation.\nThese features are ideal if you want to customize the rotation.", MNK.JobID)]
+    [CustomComboInfo("アドバンストモード - 範囲",
+        "壊神衝をフルワンボタン範囲ローテーションに置き換えます。\nローテーションをカスタマイズしたい場合に最適な機能です。", MNK.JobID)]
     MNK_AOE_AdvancedMode = 9027,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
-    [CustomComboInfo("Meditation Option", "Adds Meditation to the rotation", MNK.JobID)]
+    [CustomComboInfo("万象闘気", "万象闘気を自動で使用します。", MNK.JobID)]
     MNK_AoEUseMeditation = 9028,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
-    [CustomComboInfo("Howling Fist Option", "Adds Howling Fist to the rotation", MNK.JobID)]
+    [CustomComboInfo("万象闘気圏", "万象闘気圏を自動で使用します。", MNK.JobID)]
     MNK_AoEUseHowlingFist = 9033,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
-    [CustomComboInfo("Form Shift Option", "Adds Form Shift to the rotation", MNK.JobID)]
+    [CustomComboInfo("演武", "演武を自動で使用します。", MNK.JobID)]
     MNK_AoEUseFormShift = 9038,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
-    [CustomComboInfo("Buffs Option", "Adds selected buffs to the rotation", MNK.JobID)]
+    [CustomComboInfo("バフオプション", "選択されたバフを自動で使用します。", MNK.JobID)]
     MNK_AoEUseBuffs = 9029,
 
     [ParentCombo(MNK_AoEUseBuffs)]
-    [CustomComboInfo("Brotherhood Option", "Adds Brotherhood to the rotation", MNK.JobID)]
+    [CustomComboInfo("桃園結義", "桃園結義を自動で使用します。", MNK.JobID)]
     MNK_AoEUseBrotherhood = 9030,
 
     [ParentCombo(MNK_AoEUseBuffs)]
-    [CustomComboInfo("Riddle of Fire Option", "Adds Riddle of Fire to the rotation", MNK.JobID)]
+    [CustomComboInfo("紅蓮の極意", "紅蓮の極意を自動で使用します。", MNK.JobID)]
     MNK_AoEUseROF = 9032,
 
     [ParentCombo(MNK_AoEUseROF)]
-    [CustomComboInfo("Fire's Reply Option", "Adds Fire's Reply to the rotation", MNK.JobID)]
+    [CustomComboInfo("乾坤闘気弾", "乾坤闘気弾を自動で使用します。", MNK.JobID)]
     MNK_AoEUseFiresReply = 9036,
 
     [ParentCombo(MNK_AoEUseBuffs)]
-    [CustomComboInfo("Riddle of Wind Option", "Adds Riddle of Wind to the rotation", MNK.JobID)]
+    [CustomComboInfo("疾風の極意", "疾風の極意を自動で使用します。", MNK.JobID)]
     MNK_AoEUseROW = 9031,
 
     [ParentCombo(MNK_AoEUseROW)]
-    [CustomComboInfo("Wind's Reply Option", "Adds Wind's Reply to the rotation", MNK.JobID)]
+    [CustomComboInfo("絶空拳", "絶空拳を自動で使用します。", MNK.JobID)]
     MNK_AoEUseWindsReply = 9035,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
-    [CustomComboInfo("Perfect Balance Option", "Adds Perfect Balance to the rotation", MNK.JobID)]
+    [CustomComboInfo("踏鳴", "踏鳴を自動で使用します。", MNK.JobID)]
     MNK_AoEUsePerfectBalance = 9034,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
-    [CustomComboInfo(" Masterful Blitz Option", "Adds Masterful Blitz to the rotation", MNK.JobID)]
+    [CustomComboInfo("必殺技", "必殺技を自動で使用します。", MNK.JobID)]
     MNK_AoEUseMasterfulBlitz = 9040,
 
     [ParentCombo(MNK_AOE_AdvancedMode)]
-    [CustomComboInfo("Combo Heals Option", "Adds Bloodbath and Second Wind to the rotation.", MNK.JobID)]
+    [CustomComboInfo("コンボヒールオプション", "ブラッドバスとセカンドウィンドを自動で使用します。", MNK.JobID)]
     MNK_AoE_ComboHeals = 9037,
 
     #endregion
@@ -2938,21 +2938,21 @@ public enum CustomComboPreset
     #region Monk Beast Chakras
 
     [ConflictingCombos(MNK_ST_AdvancedMode, MNK_ST_SimpleMode)]
-    [CustomComboInfo("Beast Chakra Handlers", "Merge single target GCDs which share the same beast chakra", MNK.JobID)]
+    [CustomComboInfo("チャクラハンドラー", "同じ型を共有する単体GCDを統合します。", MNK.JobID)]
     MNK_ST_BeastChakras = 9019,
 
     [ReplaceSkill(MNK.Bootshine)]
-    [CustomComboInfo("Opo-opo Option", "Replace Bootshine/Leaping Opo with Dragon Kick.", MNK.JobID)]
+    [CustomComboInfo("壱の型", "連撃を双竜脚に置き換えます。", MNK.JobID)]
     [ParentCombo(MNK_ST_BeastChakras)]
     MNK_BC_OPOOPO = 9020,
 
     [ReplaceSkill(MNK.TrueStrike)]
-    [CustomComboInfo("Raptor Option", "Replace True Strike/Rising Raptor with Twin Snakes.", MNK.JobID)]
+    [CustomComboInfo("弐の型", "正拳突きを双掌打に置き換えます。", MNK.JobID)]
     [ParentCombo(MNK_ST_BeastChakras)]
     MNK_BC_RAPTOR = 9021,
 
     [ReplaceSkill(MNK.SnapPunch)]
-    [CustomComboInfo("Coeurl Option", "Replace Snap Punch/Pouncing Coeurl with Demolish.", MNK.JobID)]
+    [CustomComboInfo("参の型", "崩拳を破砕拳に置き換えます。", MNK.JobID)]
     [ParentCombo(MNK_ST_BeastChakras)]
     MNK_BC_COEURL = 9022,
 
@@ -2962,24 +2962,24 @@ public enum CustomComboPreset
 
     [Variant]
     [VariantParent(MNK_ST_SimpleMode, MNK_ST_AdvancedMode, MNK_AOE_SimpleMode, MNK_AOE_AdvancedMode)]
-    [CustomComboInfo("Rampart Option", "Use Variant Rampart on cooldown.", MNK.JobID)]
+    [CustomComboInfo("ランパートオプション", "クールダウン時にバリアントランパートを使用します。", MNK.JobID)]
     MNK_Variant_Rampart = 9025,
 
     [Variant]
     [VariantParent(MNK_ST_SimpleMode, MNK_ST_AdvancedMode, MNK_AOE_SimpleMode, MNK_AOE_AdvancedMode)]
-    [CustomComboInfo("Cure Option", "Use Variant Cure when HP is below set threshold.", MNK.JobID)]
+    [CustomComboInfo("キュアオプション", "HPが設定された閾値を下回ったときにバリアントキュアを使用します。", MNK.JobID)]
     MNK_Variant_Cure = 9026,
 
     #endregion
 
     [ReplaceSkill(MNK.PerfectBalance)]
-    [CustomComboInfo("Perfect Balance Feature",
-        "Perfect Balance becomes Masterful Blitz while you have 3 Beast Chakra.", MNK.JobID)]
+    [CustomComboInfo("踏鳴機能",
+        "チャクラが3つある間、踏鳴が必殺技に変わります。", MNK.JobID)]
     MNK_PerfectBalance = 9023,
 
     [ReplaceSkill(MNK.RiddleOfFire)]
-    [CustomComboInfo("Riddle of Fire/Brotherhood Feature",
-        "Replaces Riddle of Fire with Brotherhood when Riddle of Fire is on cooldown.", MNK.JobID)]
+    [CustomComboInfo("紅蓮の極意/桃園結義機能",
+        "紅蓮の極意がクールダウン中の場合、紅蓮の極意を桃園結義に置き換えます。", MNK.JobID)]
     MNK_Riddle_Brotherhood = 9024,
 
     // Last value = 9040
