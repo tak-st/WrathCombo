@@ -23,7 +23,7 @@ internal partial class DNC
 
         protected override uint Invoke(uint actionID)
         {
-            if (actionID is not Cascade) return actionID;
+            if (actionID is not (Cascade or Fountain)) return actionID;
 
             #region Variables
 
@@ -34,7 +34,7 @@ internal partial class DNC
             var targetHpThresholdFeather = Config.DNC_ST_Adv_FeatherBurstPercent;
             var targetHpThresholdStandard = Config.DNC_ST_Adv_SSBurstPercent;
             var targetHpThresholdTechnical = Config.DNC_ST_Adv_TSBurstPercent;
-            var gcd = GetCooldown(Fountain).CooldownTotal;
+            var gcd = GetCooldown(OriginalHook(Fountain)).CooldownTotal;
             var tillanaDriftProtectionActive =
                 Config.DNC_ST_ADV_TillanaUse == (int)Config.TillanaDriftProtection.Favor;
 
@@ -56,7 +56,8 @@ internal partial class DNC
                 !HasEffect(Buffs.StandardStep) && // After Standard
                 IsOnCooldown(StandardStep) &&
                 GetTargetHPPercent() > targetHpThresholdTechnical && // HP% check
-                LevelChecked(TechnicalStep);
+                LevelChecked(TechnicalStep) &&
+                actionID is not Fountain;
 
             var needToStandardOrFinish =
                 GetTargetHPPercent() > targetHpThresholdStandard && // HP% check
@@ -182,12 +183,14 @@ internal partial class DNC
                 GetCooldownRemainingTime(Devilment) < 0.05 &&
                 (HasEffect(Buffs.TechnicalFinish) ||
                  WasLastAction(TechnicalFinish4) ||
-                 !LevelChecked(TechnicalStep)))
+                 !LevelChecked(TechnicalStep)) &&
+                actionID is not Fountain)
                 return Devilment;
 
             // ST Flourish
             if (IsEnabled(CustomComboPreset.DNC_ST_Adv_Flourish) &&
-                CanWeave() &&
+                //CanWeave() &&
+                LevelChecked(Flourish) &&
                 ActionReady(Flourish) &&
                 !WasLastWeaponskill(TechnicalFinish4) &&
                 IsOnCooldown(Devilment) &&
@@ -390,18 +393,20 @@ internal partial class DNC
                 return SaberDance;
 
             // ST combos and burst attacks
-            if (LevelChecked(Fountain) &&
+            if (LevelChecked(OriginalHook(Fountain)) &&
                 ComboAction is Cascade &&
                 ComboTimer is < 2 and > 0)
-                return Fountain;
+                return OriginalHook(Fountain);
 
             if (LevelChecked(Fountainfall) && flow)
                 return Fountainfall;
             if (LevelChecked(ReverseCascade) && symmetry)
                 return ReverseCascade;
-            if (LevelChecked(Fountain) && ComboAction is Cascade &&
+            if (LevelChecked(OriginalHook(Fountain)) && ComboAction is Cascade &&
                 ComboTimer > 0)
-                return Fountain;
+                return OriginalHook(Fountain);
+
+            return OriginalHook(Cascade);
 
             #endregion
 
@@ -522,7 +527,8 @@ internal partial class DNC
                 return Devilment;
 
             // ST Flourish
-            if (CanWeave() &&
+            if (//CanWeave() &&
+                LevelChecked(Flourish) &&
                 ActionReady(Flourish) &&
                 !WasLastWeaponskill(TechnicalFinish4) &&
                 IsOnCooldown(Devilment) &&
@@ -674,18 +680,18 @@ internal partial class DNC
                 return Tillana;
 
             // ST combos and burst attacks
-            if (LevelChecked(Fountain) &&
+            if (LevelChecked(OriginalHook(Fountain)) &&
                 ComboAction is Cascade &&
                 ComboTimer is < 2 and > 0)
-                return Fountain;
+                return OriginalHook(Fountain);
 
             if (LevelChecked(Fountainfall) && flow)
                 return Fountainfall;
             if (LevelChecked(ReverseCascade) && symmetry)
                 return ReverseCascade;
-            if (LevelChecked(Fountain) && ComboAction is Cascade &&
+            if (LevelChecked(OriginalHook(Fountain)) && ComboAction is Cascade &&
                 ComboTimer > 0)
-                return Fountain;
+                return OriginalHook(Fountain);
 
             #endregion
 
@@ -1291,8 +1297,8 @@ internal partial class DNC
                 return Fountainfall;
             if (LevelChecked(ReverseCascade) && symmetry)
                 return ReverseCascade;
-            if (LevelChecked(Fountain) && ComboAction is Cascade)
-                return Fountain;
+            if (LevelChecked(OriginalHook(Fountain)) && ComboAction is Cascade)
+                return OriginalHook(Fountain);
 
             return actionID;
         }
