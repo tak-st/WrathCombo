@@ -114,7 +114,7 @@ internal partial class WHM
                 if (lucidEnabled && lucidReady)
                     return All.LucidDreaming;
 
-                if (GetRemainingCharges(DivineBenison) == 2) {
+                if (LevelChecked(DivineBenison) && GetRemainingCharges(DivineBenison) == 2) {
                     return DivineBenison;
                 }
             }
@@ -339,7 +339,7 @@ internal partial class WHM
                     LocalPlayer.CurrentMp <= Config.WHM_AoEDPS_Lucid)
                     return All.LucidDreaming;
 
-                if (GetRemainingCharges(DivineBenison) == 2) {
+                if (LevelChecked(DivineBenison) && GetRemainingCharges(DivineBenison) == 2) {
                     return DivineBenison;
                 }
             }

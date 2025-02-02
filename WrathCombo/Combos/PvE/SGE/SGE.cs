@@ -297,6 +297,7 @@ internal partial class SGE
                     // Psyche
                     if (Config.SGE_ST_DPS_Movement[3] && ActionReady(Psyche))
                         return Psyche;
+                    uint phlegma = OriginalHook(Phlegma);
 
                     // Phlegma
                     if (InActionRange(phlegma) && LevelChecked(phlegma) && ActionReady(phlegma))
