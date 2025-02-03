@@ -21,6 +21,8 @@ internal partial class MNK
             MNK_VariantCure = new("MNK_Variant_Cure"),
             MNK_SelectedOpener = new("MNK_SelectedOpener", 0),
             MNK_Balance_Content = new("MNK_Balance_Content", 1);
+            MNK_ST_FiresReply_Order = new("MNK_ST_FiresReply_Order", 0);
+            MNK_ST_Phoenix_Order = new("MNK_ST_Phoenix_Order", 0);
 
         internal static void Draw(CustomComboPreset preset)
         {
@@ -96,6 +98,28 @@ internal partial class MNK
                     DrawBossOnlyChoice(MNK_Balance_Content);
 
                     break;
+
+                case CustomComboPreset.MNK_STUseFiresReply:
+                    DrawHorizontalRadioButton(MNK_ST_FiresReply_Order, "乾坤→必殺技", "早期に乾坤を使用します",
+                        0);
+
+                    DrawHorizontalRadioButton(MNK_ST_FiresReply_Order, "必殺技→乾坤", "遅らせて乾坤を使用します",
+                        1);
+
+                    DrawHorizontalRadioButton(MNK_ST_FiresReply_Order, "最大遅らせ乾坤", "乾坤を最大まで遅らせます",
+                        2);
+                        
+                case MNK_STUseMasterfulBlitz:
+                    DrawHorizontalRadioButton(MNK_ST_Phoenix_Order, "1→2→3", "鳳凰の舞の使用順番",
+                        0);
+
+                    DrawHorizontalRadioButton(MNK_ST_Phoenix_Order, "2→3→1", "鳳凰の舞の使用順番",
+                        1);
+
+                    DrawHorizontalRadioButton(MNK_ST_Phoenix_Order, "3→2→1", "鳳凰の舞の使用順番",
+                        2);
+
+
 
                 case CustomComboPreset.MNK_Variant_Cure:
                     DrawSliderInt(1, 100, MNK_VariantCure, "HP% to be at or under", 200);

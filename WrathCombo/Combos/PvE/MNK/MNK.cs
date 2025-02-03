@@ -298,26 +298,37 @@ internal partial class MNK
 
                 if (!SolarNadi && !BothNadisOpen)
                 {
-                    if (OpoOpoChakra == 0)
-                        return canMelee ?
-                            Gauge.OpoOpoFury == 0
-                                ? OriginalHook(DragonKick)
-                                : OriginalHook(Bootshine)
-                            : OriginalHook(ArmOfTheDestroyer);
-                    
-                    if (RaptorChakra == 0)
-                        return canMelee ?
-                            Gauge.RaptorFury == 0
-                                ? TwinSnakes
-                                : OriginalHook(TrueStrike)
-                            : FourPointFury;
+                    uint OpoOpoAction = canMelee ?
+                                Gauge.OpoOpoFury == 0
+                                    ? OriginalHook(DragonKick)
+                                    : OriginalHook(Bootshine)
+                                : OriginalHook(ArmOfTheDestroyer);
 
-                    if (CoeurlChakra == 0)
-                        return canMelee ?
-                            Gauge.CoeurlFury == 0
-                                ? Demolish
-                                : OriginalHook(SnapPunch)
-                            : Rockbreaker;
+                    uint RaptorAction = canMelee ?
+                                Gauge.RaptorFury == 0
+                                    ? TwinSnakes
+                                    : OriginalHook(TrueStrike)
+                                : FourPointFury;
+
+                    uint CoeurlAction = canMelee ?
+                                Gauge.CoeurlFury == 0
+                                    ? Demolish
+                                    : OriginalHook(SnapPunch)
+                                : Rockbreaker;
+
+                    if (Config.MNK_ST_Phoenix_Order == 1) {
+                        if (RaptorChakra == 0) return RaptorAction;
+                        if (CoeurlChakra == 0) return CoeurlAction;
+                        if (OpoOpoChakra == 0) return OpoOpoAction;
+                    } else if (Config.MNK_ST_Phoenix_Order == 2) {
+                        if (CoeurlChakra == 0) return CoeurlAction;
+                        if (RaptorChakra == 0) return RaptorAction;
+                        if (OpoOpoChakra == 0) return OpoOpoAction;
+                    } else {
+                        if (OpoOpoChakra == 0) return OpoOpoAction;
+                        if (RaptorChakra == 0) return RaptorAction;
+                        if (CoeurlChakra == 0) return CoeurlAction;
+                    }
                 }
 
                 #endregion
@@ -331,6 +342,7 @@ internal partial class MNK
                     !HasEffect(Buffs.FormlessFist) &&
                     HasBattleTarget() &&
                     GetTargetDistance() <= 20 &&
+                    (Config.MNK_ST_FiresReply_Order != 2 || GetBuffRemainingTime(Buffs.FiresRumination) <= GCD * 4) &&
                     (JustUsed(OriginalHook(Bootshine)) ||
                      JustUsed(OriginalHook(DragonKick)) ||
                      (HasEffect(Buffs.Brotherhood) && GetBuffRemainingTime(Buffs.Brotherhood) < 4) ||
@@ -345,8 +357,8 @@ internal partial class MNK
                     HasBattleTarget() &&
                     GetTargetDistance() <= 10 &&
                     (
-                        (HasEffect(Buffs.Brotherhood) && GetBuffRemainingTime(Buffs.Brotherhood) <= 2) ||
-                        (HasEffect(Buffs.RiddleOfFire) && GetBuffRemainingTime(Buffs.RiddleOfFire) <= 2) ||
+                        (HasEffect(Buffs.Brotherhood) && GetBuffRemainingTime(Buffs.Brotherhood) < 4) ||
+                        (HasEffect(Buffs.RiddleOfFire) && GetBuffRemainingTime(Buffs.RiddleOfFire) < 4) ||
                         GetBuffRemainingTime(Buffs.WindsRumination) < 6)
                     )
                     return WindsReply;

@@ -73,7 +73,7 @@ internal partial class MNK
 
     internal static bool UsePerfectBalance()
     {
-        if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasEffect(Buffs.FormlessFist) && !HasEffect(Buffs.FiresRumination))
+        if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasEffect(Buffs.FormlessFist) && (Config.MNK_ST_FiresReply_Order != 0 || !HasEffect(Buffs.FiresRumination)))
         {
             // Odd window
             if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD)) &&
