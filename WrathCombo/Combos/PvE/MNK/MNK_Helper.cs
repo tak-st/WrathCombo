@@ -163,6 +163,7 @@ internal partial class MNK
             RiddleOfWind = 2687,
             FormlessFist = 2513,
             TrueNorth = 1250,
+            EarthsRumination = 3841,
             WindsRumination = 3842,
             FiresRumination = 3843,
             Brotherhood = 1185;

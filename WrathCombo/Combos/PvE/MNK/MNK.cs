@@ -54,10 +54,10 @@ internal partial class MNK
                 if (UsePerfectBalance())
                     return PerfectBalance;
 
-                if (PlayerHealthPercentageHp() <= 25 && ActionReady(All.SecondWind))
+                if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 25 && ActionReady(All.SecondWind))
                     return All.SecondWind;
 
-                if (PlayerHealthPercentageHp() <= 40 && ActionReady(All.Bloodbath))
+                if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 40 && ActionReady(All.Bloodbath))
                     return All.Bloodbath;
 
                 if (Gauge.Chakra >= 5 && InCombat() && LevelChecked(SteeledMeditation))
@@ -141,6 +141,13 @@ internal partial class MNK
             bool canMelee = HasBattleTarget() && InMeleeRange();
             bool isWindBh = (HasEffect(Buffs.Brotherhood) && JustUsed(RiddleOfWind, 15 + (20 - GetBuffRemainingTime(Buffs.Brotherhood))));
             bool readyBlitz = Gauge.BlitzTimeRemaining > 0;
+                
+            if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
+                IsEnabled(CustomComboPreset.MNK_STUseFiresReply) &&
+                HasEffect(Buffs.FiresRumination) &&
+                HasBattleTarget() &&
+                (GetBuffRemainingTime(Buffs.FiresRumination) < 2 && GetTargetDistance() <= 20))
+                return FiresReply;
 
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_STUseWindsReply) &&
@@ -154,7 +161,7 @@ internal partial class MNK
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_STUseFiresReply) &&
                 HasEffect(Buffs.FiresRumination) &&
-                (HasBattleTarget() && !InMeleeRange() && GetTargetDistance() <= 20))
+                HasBattleTarget() && !InMeleeRange() && GetTargetDistance() <= 20)
                 return FiresReply;
 
             if (IsEnabled(CustomComboPreset.MNK_STUseMeditation) &&
@@ -195,7 +202,7 @@ internal partial class MNK
             if (IsEnabled(CustomComboPreset.MNK_STUseBrotherhood) &&
                 IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat() &&
                 canMelee &&
-                (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.6) && 
+                (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.7) && 
                 ((HasEffect(Buffs.PerfectBalance) && (((JustUsed(Brotherhood, 124) && (GetBuffRemainingTime(Buffs.WindsRumination) <= 2 && GetCooldownRemainingTime(RiddleOfWind) > 17.35)) && GetBuffStacks(Buffs.PerfectBalance) <= 2) || GetBuffStacks(Buffs.PerfectBalance) <= 1)) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 1) || GetRemainingCharges(PerfectBalance) <= 0) &&
                 GetTargetHPPercent() >= Config.MNK_ST_Brotherhood_HP &&
                 actionID is not DragonKick)
@@ -203,7 +210,7 @@ internal partial class MNK
 
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_STUseROF) &&
-                (IsOffCooldown(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) <= 1.05) &&
+                (IsOffCooldown(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) <= 1) &&
                 !HasEffect(Buffs.RiddleOfFire) &&
                 (!IsOffCooldown(Brotherhood) || HasEffect(Buffs.Brotherhood)) &&
                 ((!HasBattleTarget() && GetCooldownRemainingTime(Brotherhood) <= 61 && GetCooldownRemainingTime(Brotherhood) >= 56) || GetTargetHPPercent() >= Config.MNK_ST_RiddleOfFire_HP) &&
@@ -239,19 +246,25 @@ internal partial class MNK
                         return RiddleOfWind;
                 }
 
-                if (IsEnabled(CustomComboPreset.MNK_ST_ComboHeals))
-                {
-                    if (PlayerHealthPercentageHp() <= Config.MNK_ST_SecondWind_Threshold && ActionReady(All.SecondWind))
-                        return All.SecondWind;
-
-                    if (PlayerHealthPercentageHp() <= Config.MNK_ST_Bloodbath_Threshold && ActionReady(All.Bloodbath))
-                        return All.Bloodbath;
-                }
-
                 if (IsEnabled(CustomComboPreset.MNK_STUseTheForbiddenChakra) &&
                     Gauge.Chakra >= 5 && InCombat() && canMelee && GetCooldownRemainingTime(Brotherhood) >= GCD &&
                     LevelChecked(SteeledMeditation))
                     return OriginalHook(SteeledMeditation);
+
+                if (IsEnabled(CustomComboPreset.MNK_ST_ComboHeals) && PlayerHealthPercentageHp() <= 99)
+                {
+                    if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= Config.MNK_ST_SecondWind_Threshold && ActionReady(All.SecondWind))
+                        return All.SecondWind;
+
+                    if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= Config.MNK_ST_Bloodbath_Threshold && ActionReady(All.Bloodbath) && HasBattleTarget())
+                        return All.Bloodbath;
+                }
+
+                if (IsEnabled(CustomComboPreset.MNK_ST_ComboHeals) &&
+                    HasEffect(Buffs.EarthsRumination) &&
+                    LevelChecked(EarthsReply) &&
+                    GetBuffRemainingTime(Buffs.EarthsRumination) < 4)
+                return EarthsReply;
             }
 
             // GCDs
@@ -431,10 +444,10 @@ internal partial class MNK
                     HasBattleTarget() && InCombat())
                     return OriginalHook(InspiritedMeditation);
 
-                if (PlayerHealthPercentageHp() <= 25 && ActionReady(All.SecondWind))
+                if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 25 && ActionReady(All.SecondWind))
                     return All.SecondWind;
 
-                if (PlayerHealthPercentageHp() <= 40 && ActionReady(All.Bloodbath))
+                if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 40 && ActionReady(All.Bloodbath))
                     return All.Bloodbath;
             }
 
@@ -575,11 +588,11 @@ internal partial class MNK
 
                 if (IsEnabled(CustomComboPreset.MNK_AoE_ComboHeals))
                 {
-                    if (PlayerHealthPercentageHp() <= Config.MNK_AoE_SecondWind_Threshold &&
+                    if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= Config.MNK_AoE_SecondWind_Threshold &&
                         ActionReady(All.SecondWind))
                         return All.SecondWind;
 
-                    if (PlayerHealthPercentageHp() <= Config.MNK_AoE_Bloodbath_Threshold &&
+                    if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= Config.MNK_AoE_Bloodbath_Threshold &&
                         ActionReady(All.Bloodbath))
                         return All.Bloodbath;
                 }
