@@ -13,15 +13,16 @@ internal partial class MNK
             MNK_ST_RiddleOfWind_HP = new("MNK_ST_RiddleOfWind_HP", 0),
             MNK_AoE_Brotherhood_HP = new("MNK_AoE_Brotherhood_HP", 5),
             MNK_AoE_RiddleOfWind_HP = new("MNK_AoE_RiddleOfWind_HP", 5),
-            MNK_AoE_RiddleOfFire_HP = new("MNK_AoE_RiddleOfFire_HP", 5),
+            MNK_AoE_RiddleOfFire_HP = new("MNK_AoE_RiddleOfFire_HP", 0),
             MNK_ST_SecondWind_Threshold = new("MNK_ST_SecondWindThreshold", 25),
             MNK_ST_Bloodbath_Threshold = new("MNK_ST_BloodbathThreshold", 40),
             MNK_AoE_SecondWind_Threshold = new("MNK_AoE_SecondWindThreshold", 25),
             MNK_AoE_Bloodbath_Threshold = new("MNK_AoE_BloodbathThreshold", 40),
+            MNK_AoE_RiddleOfEarth_Threshold = new("MNK_AoE_RiddleOfEarth_Threshold", 90),
             MNK_VariantCure = new("MNK_Variant_Cure"),
             MNK_SelectedOpener = new("MNK_SelectedOpener", 0),
-            MNK_Balance_Content = new("MNK_Balance_Content", 1);
-            MNK_ST_FiresReply_Order = new("MNK_ST_FiresReply_Order", 0);
+            MNK_Balance_Content = new("MNK_Balance_Content", 1),
+            MNK_ST_FiresReply_Order = new("MNK_ST_FiresReply_Order", 0),
             MNK_ST_Phoenix_Order = new("MNK_ST_Phoenix_Order", 0);
 
         internal static void Draw(CustomComboPreset preset)
@@ -43,6 +44,9 @@ internal partial class MNK
 
                     DrawSliderInt(0, 100, MNK_AoE_Bloodbath_Threshold,
                         $"PT平均から自身のHP%が乖離したら {All.Bloodbath.ActionName()} を使用 (0で無効)");
+
+                    DrawSliderInt(0, 100, MNK_AoE_RiddleOfEarth_Threshold,
+                        $"{RiddleOfEarth.ActionName()} を使用するPT平均の最低HP% (0で無効)");
 
                     break;
 
