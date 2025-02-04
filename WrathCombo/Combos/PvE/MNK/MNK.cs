@@ -210,7 +210,7 @@ internal partial class MNK
 
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_STUseROF) &&
-                (IsOffCooldown(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) <= 1) &&
+                (IsOffCooldown(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) <= (GCD - 0.99)) &&
                 !HasEffect(Buffs.RiddleOfFire) &&
                 (!IsOffCooldown(Brotherhood) || HasEffect(Buffs.Brotherhood)) &&
                 ((!HasBattleTarget() && GetCooldownRemainingTime(Brotherhood) <= 61 && GetCooldownRemainingTime(Brotherhood) >= 56) || GetTargetHPPercent() >= Config.MNK_ST_RiddleOfFire_HP) &&
