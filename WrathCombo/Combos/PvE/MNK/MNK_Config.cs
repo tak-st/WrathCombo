@@ -87,7 +87,7 @@ internal partial class MNK
                     break;
 
                 case CustomComboPreset.MNK_STUseOpener:
-                    DrawHorizontalRadioButton(MNK_SelectedOpener, "真真 自動", "真真回し / 5秒バースト 踊り子存在時、7秒バースト",
+                    DrawHorizontalRadioButton(MNK_SelectedOpener, "真真 自動", "5秒バースト 踊り子・ピクト存在時、7秒バースト",
                         4);
 
                     DrawHorizontalRadioButton(MNK_SelectedOpener, "真真 5秒", "真真回し / 5秒バースト",
@@ -116,7 +116,7 @@ internal partial class MNK
                     DrawHorizontalRadioButton(MNK_ST_FiresReply_Order, "最大遅らせ乾坤", "乾坤を最大まで遅らせます",
                         2);
                     break;
-                        
+
                 case CustomComboPreset.MNK_STUseMasterfulBlitz:
                     DrawHorizontalRadioButton(MNK_ST_Phoenix_Order, "1→2→3", "鳳凰の舞の使用順番",
                         0);

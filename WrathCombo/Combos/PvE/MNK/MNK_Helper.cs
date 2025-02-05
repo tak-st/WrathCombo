@@ -179,7 +179,7 @@ internal partial class MNK
     internal static WrathOpener Opener()
     {
         if (Config.MNK_SelectedOpener == 4)
-            return GetPartyMembers().Any(x => x.BattleChara.ClassJob.RowId == DNC.JobID) ? MNKOpenerLL7 : MNKOpenerLL;
+            return GetPartyMembers().Any(x => new[] { DNC.JobID, PCT.JobID }.Contains(x.BattleChara.ClassJob.RowId)) ? MNKOpenerLL7 : MNKOpenerLL;
 
         if (Config.MNK_SelectedOpener == 0)
             return MNKOpenerLL;
