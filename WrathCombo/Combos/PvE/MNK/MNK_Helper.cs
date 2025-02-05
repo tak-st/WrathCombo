@@ -79,8 +79,7 @@ internal partial class MNK
         {
             // Odd window
             if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD)) &&
-                GetCooldownRemainingTime(PerfectBalance) < GetCooldownRemainingTime(Brotherhood) + 10 &&
-                GetCooldownRemainingTime(Brotherhood) > 10 &&
+                GetCooldownRemainingTime(PerfectBalance) + 40 < GetCooldownRemainingTime(Brotherhood) + 10 &&
                 (
                     (HasEffect(Buffs.RiddleOfFire) && GetBuffRemainingTime(Buffs.RiddleOfFire) > GCD * 4 + RemainingGCD) || (
                         (Config.MNK_ST_Fast_Phoenix == 1 &&
