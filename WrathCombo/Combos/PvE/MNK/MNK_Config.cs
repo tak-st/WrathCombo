@@ -112,8 +112,9 @@ internal partial class MNK
 
                     DrawHorizontalRadioButton(MNK_ST_FiresReply_Order, "最大遅らせ乾坤", "乾坤を最大まで遅らせます",
                         2);
+                    break;
                         
-                case MNK_STUseMasterfulBlitz:
+                case CustomComboPreset.MNK_STUseMasterfulBlitz:
                     DrawHorizontalRadioButton(MNK_ST_Phoenix_Order, "1→2→3", "鳳凰の舞の使用順番",
                         0);
 
@@ -122,6 +123,7 @@ internal partial class MNK
 
                     DrawHorizontalRadioButton(MNK_ST_Phoenix_Order, "3→2→1", "鳳凰の舞の使用順番",
                         2);
+                    break;
 
 
 

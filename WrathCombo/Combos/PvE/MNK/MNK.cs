@@ -142,7 +142,7 @@ internal partial class MNK
             bool isWindBh = (HasEffect(Buffs.Brotherhood) && JustUsed(RiddleOfWind, 15 + (20 - GetBuffRemainingTime(Buffs.Brotherhood))));
             bool readyBlitz = Gauge.BlitzTimeRemaining > 0;
 
-            float remainingSec = actionID is Thunderclap && GetTargetDistance() > 20 ? (GetTargetDistance() - 20) / 6.13 : 0;
+            double remainingSec = actionID is Thunderclap && GetTargetDistance() > 20 ? (GetTargetDistance() - 20) / 6.13 : 0;
 
             if (actionID is Thunderclap && ActionReady(Thunderclap) && (!canMelee || !JustUsed(Thunderclap, 4)) && (!HasBattleTarget() || remainingSec < 0.75))
                 return actionID;
@@ -537,14 +537,14 @@ internal partial class MNK
             bool canMelee = HasBattleTarget() && InMeleeRange();
             uint raptorAction = LevelChecked(FourPointFury) ? FourPointFury : 
                             canMelee ?
-                                levelChecked(TwinSnakes) && Gauge.RaptorFury == 0 
+                                LevelChecked(TwinSnakes) && Gauge.RaptorFury == 0 
                                     ? TwinSnakes
                                     : OriginalHook(TrueStrike)
                                 : actionID;
 
             uint coeurlAction = LevelChecked(Rockbreaker) ? Rockbreaker : 
                             canMelee ?
-                                levelChecked(Demolish) && Gauge.CoeurlFury == 0
+                                LevelChecked(Demolish) && Gauge.CoeurlFury == 0
                                     ? Demolish
                                     : OriginalHook(SnapPunch)
                                 : actionID;
@@ -604,8 +604,8 @@ internal partial class MNK
                     ActionReady(PerfectBalance) &&
                     JustUsed(maxPowerSkill, GCD) &&
                     !HasEffect(Buffs.PerfectBalance) &&
-                    (HasEffect(Buffs.Brotherhood) ||
-                     (HasEffect(Buffs.RiddleOfFire) && !JustUsed(PerfectBalance, 20))))
+                    (!LevelChecked(Brotherhood) || HasEffect(Buffs.Brotherhood) ||
+                     ((!LevelChecked(RiddleOfFire) || HasEffect(Buffs.RiddleOfFire)) && !JustUsed(PerfectBalance, 20))))
                     return PerfectBalance;
 
                 if (IsEnabled(CustomComboPreset.MNK_AoEUseHowlingFist) &&
@@ -648,10 +648,10 @@ internal partial class MNK
                     (
                         (!BothNadisOpen && Gauge.BlitzTimeRemaining <= 4000) || 
                         (
-                            GetCooldownRemainingTime(Brotherhood) >= GCD * 3 &&
+                            (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) >= GCD * 3) &&
                             (
-                                GetCooldownRemainingTime(Brotherhood) <= 120 - (GCD * 2) ||
-                                GetCooldownRemainingTime(RiddleOfFire) >= 4
+                                (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 120 - (GCD * 2)) ||
+                                (!LevelChecked(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) >= 4)
                             )
                         )
                     )
@@ -671,8 +671,8 @@ internal partial class MNK
 
                 if (!SolarNadi && !BothNadisOpen) {
                     if (OpoOpoChakra == 0 && RaptorChakra == 0 && CoeurlChakra == 0) return maxPowerSkill;
-                    if (CoeurlChakra == 0) return CoeurlAction;
-                    if (RaptorChakra == 0) return RaptorAction;
+                    if (CoeurlChakra == 0) return coeurlAction;
+                    if (RaptorChakra == 0) return raptorAction;
                     if (OpoOpoChakra == 0) return OriginalHook(ArmOfTheDestroyer);
                 }
                 #endregion
