@@ -75,18 +75,28 @@ internal partial class MNK
 
     internal static bool UsePerfectBalance()
     {
-        if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasEffect(Buffs.FormlessFist) && (Config.MNK_ST_FiresReply_Order != 0 || !HasEffect(Buffs.FiresRumination)))
+        if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasEffect(Buffs.FormlessFist) && Gauge.BlitzTimeRemaining <= 0 && (Config.MNK_ST_FiresReply_Order != 0 || !HasEffect(Buffs.FiresRumination)))
         {
             // Odd window
             if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD)) &&
-                !JustUsed(PerfectBalance, 20) &&
-                HasEffect(Buffs.RiddleOfFire) && !HasEffect(Buffs.Brotherhood) &&
-                !BothNadisOpen)
+                GetCooldownRemainingTime(PerfectBalance) < GetCooldownRemainingTime(Brotherhood) + 10 &&
+                GetCooldownRemainingTime(Brotherhood) > 10 &&
+                (
+                    (HasEffect(Buffs.RiddleOfFire) && GetBuffRemainingTime(Buffs.RiddleOfFire) > GCD * 4 + RemainingGCD) || (
+                        (Config.MNK_ST_Fast_Phoenix == 1 &&
+                            (GetCooldownRemainingTime(RiddleOfFire) < (GCD * 4 - 1) ||
+                                (
+                                    GetRemainingCharges(PerfectBalance) == 2 && GetCooldownRemainingTime(RiddleOfFire) < 20
+                                )
+                            )
+                        )
+                    )
+                ) && !HasEffect(Buffs.Brotherhood) && (!BothNadisOpen || (Config.MNK_ST_Fast_Phoenix == 1 && GetRemainingCharges(PerfectBalance) == 2 && GetCooldownRemainingTime(RiddleOfFire) > 12 && GetCooldownRemainingTime(RiddleOfFire) < 20)))
                 return true;
 
             // Even window
-            if ((JustUsed(OriginalHook(Bootshine), GCD * 2) || JustUsed(OriginalHook(DragonKick), GCD * 2) || GetCooldownRemainingTime(Brotherhood) <= GCD * 1.8 || GetBuffRemainingTime(Buffs.WindsRumination) > 12 || GetCooldownRemainingTime(RiddleOfWind) < 20) &&
-                (GetCooldownRemainingTime(Brotherhood) <= GCD * 2.8 || HasEffect(Buffs.Brotherhood)))
+            if ((JustUsed(OriginalHook(Bootshine), GCD * 2) || JustUsed(OriginalHook(DragonKick), GCD * 2) || GetCooldownRemainingTime(Brotherhood) < (GCD * 2 - 0.71) || GetBuffRemainingTime(Buffs.WindsRumination) > 12 || GetCooldownRemainingTime(RiddleOfWind) < 20) &&
+                (GetCooldownRemainingTime(Brotherhood) < (GCD * 3 - 0.71) || HasEffect(Buffs.Brotherhood)))
                 return true;
 
             // Low level

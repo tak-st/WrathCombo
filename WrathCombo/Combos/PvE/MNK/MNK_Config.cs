@@ -23,7 +23,8 @@ internal partial class MNK
             MNK_SelectedOpener = new("MNK_SelectedOpener", 4),
             MNK_Balance_Content = new("MNK_Balance_Content", 1),
             MNK_ST_FiresReply_Order = new("MNK_ST_FiresReply_Order", 0),
-            MNK_ST_Phoenix_Order = new("MNK_ST_Phoenix_Order", 0);
+            MNK_ST_Phoenix_Order = new("MNK_ST_Phoenix_Order", 0),
+            MNK_ST_Fast_Phoenix = new("MNK_ST_Fast_Phoenix", 0);
 
         internal static void Draw(CustomComboPreset preset)
         {
@@ -115,6 +116,15 @@ internal partial class MNK
 
                     DrawHorizontalRadioButton(MNK_ST_FiresReply_Order, "最大遅らせ乾坤", "乾坤を最大まで遅らせます",
                         2);
+                    break;
+
+                case CustomComboPreset.MNK_STUsePerfectBalance:
+                    DrawHorizontalRadioButton(MNK_ST_Fast_Phoenix, "紅蓮後踏鳴", "奇数バースト時、紅蓮の極意の後に踏鳴を使用します",
+                        0);
+
+                    DrawHorizontalRadioButton(MNK_ST_Fast_Phoenix, "紅蓮前踏鳴", "奇数バースト時、紅蓮の極意の前に踏鳴を使用します",
+                        1);
+
                     break;
 
                 case CustomComboPreset.MNK_STUseMasterfulBlitz:
