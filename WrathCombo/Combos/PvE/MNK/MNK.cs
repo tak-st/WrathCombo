@@ -347,6 +347,11 @@ internal partial class MNK
                         if (CoeurlChakra == 0) return CoeurlAction;
                         if (RaptorChakra == 0) return RaptorAction;
                         if (OpoOpoChakra == 0) return OpoOpoAction;
+                    } else if (Config.MNK_ST_Phoenix_Order == 3) {
+                        if (CoeurlChakra == 0 && (JustUsed(TwinSnakes) || JustUsed(OriginalHook(TrueStrike)) || JustUsed(FourPointFury))) return CoeurlAction;
+                        if (RaptorChakra == 0) return RaptorAction;
+                        if (CoeurlChakra == 0) return CoeurlAction;
+                        if (OpoOpoChakra == 0) return OpoOpoAction;
                     } else {
                         if (OpoOpoChakra == 0) return OpoOpoAction;
                         if (RaptorChakra == 0) return RaptorAction;

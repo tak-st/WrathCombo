@@ -48,6 +48,7 @@ internal partial class MNK
                 if (!OnTargetsRear() &&
                     TargetNeedsPositionals() &&
                     !HasEffect(Buffs.TrueNorth) &&
+                    CanWeave() &&
                     ActionReady(TrueNorth) &&
                     useTrueNorthIfEnabled)
                     return TrueNorth;
@@ -60,6 +61,7 @@ internal partial class MNK
                 if (!OnTargetsFlank() &&
                     TargetNeedsPositionals() &&
                     !HasEffect(Buffs.TrueNorth) &&
+                    CanWeave() &&
                     ActionReady(TrueNorth) &&
                     useTrueNorthIfEnabled)
                     return TrueNorth;
@@ -94,11 +96,12 @@ internal partial class MNK
                 return true;
         }
 
-        if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasBattleTarget() && HasEffect(Buffs.RiddleOfFire)) {
+        if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasBattleTarget() && HasEffect(Buffs.RiddleOfFire))
+        {
             // Odd window
             if (!JustUsed(PerfectBalance, 20) && !HasEffect(Buffs.Brotherhood) && !BothNadisOpen && GetBuffRemainingTime(Buffs.RiddleOfFire) <= 20 - GCD)
                 return true;
-            
+
             // Even window
             if (HasEffect(Buffs.Brotherhood))
                 return true;
@@ -175,6 +178,9 @@ internal partial class MNK
 
     internal static WrathOpener Opener()
     {
+        if (Config.MNK_SelectedOpener == 4)
+            return GetPartyMembers().Any(x => x.BattleChara.ClassJob.RowId == DNC.JobID) ? MNKOpenerLL7 : MNKOpenerLL;
+
         if (Config.MNK_SelectedOpener == 0)
             return MNKOpenerLL;
 
@@ -248,7 +254,7 @@ internal partial class MNK
         }
     }
 
-        internal class MNKOpenerLogicSL7 : WrathOpener
+    internal class MNKOpenerLogicSL7 : WrathOpener
     {
         public override int MinOpenerLevel => 100;
 
@@ -363,7 +369,7 @@ internal partial class MNK
             return true;
         }
     }
-    
+
     internal class MNKOpenerLogicLL7 : WrathOpener
     {
         public override int MinOpenerLevel => 100;

@@ -1369,20 +1369,20 @@ namespace WrathCombo.Window.Functions
             {
                 ImGui.Indent();
                 ImGui.TextUnformatted(overrideText.IsNullOrEmpty()
-                    ? "Select what kind of content this option applies to:"
+                    ? "このオプションが適用されるコンテンツの種類:"
                     : overrideText);
             }
             ImGui.Unindent();
             ImGui.NewLine();
             DrawHorizontalBoolRadioButton(
-                config, "All Content",
-                "Applies to all content in the game.",
+                config, "全コンテンツ",
+                "ゲーム内のすべてのコンテンツに適用されます。",
                 choice: 0,
                 descriptionColor: ImGuiColors.DalamudYellow
             );
             DrawHorizontalBoolRadioButton(
-                config, "Boss Only Content",
-                "Only applies in instances where you directly fight a boss. Excludes many A Realm Reborn & Heavensward raids that include trash.",
+                config, "ボス単体コンテンツ",
+                "ボスと直接戦う場合のみ適用される。多くの新生と蒼天レイドを除く。",
                 choice: 1,
                 descriptionColor: ImGuiColors.DalamudYellow
             );
@@ -1414,20 +1414,20 @@ namespace WrathCombo.Window.Functions
             {
                 ImGui.Indent();
                 ImGui.TextUnformatted(overrideText.IsNullOrEmpty()
-                    ? "Select what kind of content this option applies to:"
+                    ? "このオプションが適用されるコンテンツの種類:"
                     : overrideText);
             }
             ImGui.Unindent();
             ImGui.NewLine();
             DrawHorizontalRadioButton(
-                config, "All Content",
-                "Applies to all content in the game.",
+                config, "全コンテンツ",
+                "ゲーム内のすべてのコンテンツに適用されます。",
                 outputValue: 0,
                 descriptionColor: ImGuiColors.DalamudYellow
             );
             DrawHorizontalRadioButton(
-                config, "Boss Only Content",
-                "Only applies in instances where you directly fight a boss. Excludes many A Realm Reborn & Heavensward raids that include trash.",
+                config, "ボス単体コンテンツ",
+                "ボスと直接戦う場合のみ適用される。多くの新生と蒼天レイドを除く。",
                 outputValue: 1,
                 descriptionColor: ImGuiColors.DalamudYellow
             );
@@ -1460,7 +1460,7 @@ namespace WrathCombo.Window.Functions
                 {
                     if (customLabel.IsNullOrEmpty())
                     {
-                        ImGui.TextUnformatted($"Priority: ");
+                        ImGui.TextUnformatted($"優先度: ");
                     }
                     else
                     {
@@ -1469,7 +1469,7 @@ namespace WrathCombo.Window.Functions
                     ImGui.SameLine();
                     ImGui.PushItemWidth(100f);
 
-                    if (ImGui.InputInt($"###Priority{config.Name}{currentItem}", ref curVal))
+                    if (ImGui.InputInt($"###優先度{config.Name}{currentItem}", ref curVal))
                     {
                         for (int i = 0; i < maxValues; i++)
                         {
@@ -1492,7 +1492,7 @@ namespace WrathCombo.Window.Functions
             if (ImGui.IsItemHovered())
             {
                 ImGui.BeginTooltip();
-                ImGui.Text("Smaller Number = Higher Priority");
+                ImGui.Text("小さい数字 = 高い優先度");
                 ImGui.EndTooltip();
             }
             ImGui.Unindent();

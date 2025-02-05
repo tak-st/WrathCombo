@@ -20,7 +20,7 @@ internal partial class MNK
             MNK_AoE_Bloodbath_Threshold = new("MNK_AoE_BloodbathThreshold", 40),
             MNK_AoE_RiddleOfEarth_Threshold = new("MNK_AoE_RiddleOfEarth_Threshold", 90),
             MNK_VariantCure = new("MNK_Variant_Cure"),
-            MNK_SelectedOpener = new("MNK_SelectedOpener", 0),
+            MNK_SelectedOpener = new("MNK_SelectedOpener", 4),
             MNK_Balance_Content = new("MNK_Balance_Content", 1),
             MNK_ST_FiresReply_Order = new("MNK_ST_FiresReply_Order", 0),
             MNK_ST_Phoenix_Order = new("MNK_ST_Phoenix_Order", 0);
@@ -87,16 +87,19 @@ internal partial class MNK
                     break;
 
                 case CustomComboPreset.MNK_STUseOpener:
-                    DrawHorizontalRadioButton(MNK_SelectedOpener, "Double 5s", "Uses Lunar/Lunar opener",
+                    DrawHorizontalRadioButton(MNK_SelectedOpener, "真真 自動", "真真回し / 5秒バースト 踊り子存在時、7秒バースト",
+                        4);
+
+                    DrawHorizontalRadioButton(MNK_SelectedOpener, "真真 5秒", "真真回し / 5秒バースト",
                         0);
 
-                    DrawHorizontalRadioButton(MNK_SelectedOpener, "Solar 5s", "Uses Solar/Lunar opener",
+                    DrawHorizontalRadioButton(MNK_SelectedOpener, "鳳真 5秒", "鳳真回し / 5秒バースト",
                         1);
 
-                    DrawHorizontalRadioButton(MNK_SelectedOpener, "Double 7s", "Uses Lunar/Lunar opener",
+                    DrawHorizontalRadioButton(MNK_SelectedOpener, "真真 7秒", "真真回し / 7秒バースト",
                         2);
 
-                    DrawHorizontalRadioButton(MNK_SelectedOpener, "Solar 7s", "Uses Solar/Lunar opener",
+                    DrawHorizontalRadioButton(MNK_SelectedOpener, "鳳真 7秒", "鳳真回し / 7秒バースト",
                         3);
 
                     DrawBossOnlyChoice(MNK_Balance_Content);
@@ -123,6 +126,9 @@ internal partial class MNK
 
                     DrawHorizontalRadioButton(MNK_ST_Phoenix_Order, "3→2→1", "鳳凰の舞の使用順番",
                         2);
+
+                    DrawHorizontalRadioButton(MNK_ST_Phoenix_Order, "直前の型依存", "3の型の時に踏鳴の場合、3→2→1 それ以外は、2→3→1",
+                        3);
                     break;
 
 
