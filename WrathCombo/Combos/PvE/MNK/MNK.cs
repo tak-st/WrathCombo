@@ -160,7 +160,8 @@ internal partial class MNK
                 HasEffect(Buffs.WindsRumination) &&
                 LevelChecked(WindsReply) &&
                 HasEffect(Buffs.RiddleOfWind) &&
-                (GetBuffRemainingTime(Buffs.WindsRumination) < 2 || !InMeleeRange()) && GetTargetDistance() <= 10)
+                (GetBuffRemainingTime(Buffs.WindsRumination) < 2 || !InMeleeRange()) && GetTargetDistance() <= 10 &&
+                !(IsOffCooldown(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) <= (GCD - 0.99)))
                 return WindsReply;
 
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
@@ -571,7 +572,7 @@ internal partial class MNK
                 IsEnabled(CustomComboPreset.MNK_AoEUseFiresReply) &&
                 HasEffect(Buffs.FiresRumination) &&
                 HasBattleTarget() &&
-                (GetBuffRemainingTime(Buffs.FiresRumination) < 2 && GetTargetDistance() <= 20))
+                (GetBuffRemainingTime(Buffs.FiresRumination) < (HasEffect(Buffs.WindsRumination) ? 4 : 2) && GetTargetDistance() <= 20))
                 return FiresReply;
 
             if (IsEnabled(CustomComboPreset.MNK_AoEUseBuffs) &&
@@ -599,6 +600,13 @@ internal partial class MNK
                 PlayerHealthPercentageHp() <= Config.MNK_VariantCure)
                 return Variant.VariantCure;
 
+            if (IsEnabled(CustomComboPreset.MNK_AoEUseBrotherhood) &&
+                IsEnabled(CustomComboPreset.MNK_AoEUseBuffs) && InCombat() &&
+                LevelChecked(Brotherhood) &&
+                (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.7) &&
+                GetTargetHPPercent() >= Config.MNK_AoE_Brotherhood_HP)
+                return Brotherhood;
+
             if (IsEnabled(CustomComboPreset.MNK_AoEUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_AoEUseROF) &&
                 !HasEffect(Buffs.RiddleOfFire) &&
@@ -620,11 +628,6 @@ internal partial class MNK
 
                 if (IsEnabled(CustomComboPreset.MNK_AoEUseBuffs))
                 {
-                    if (IsEnabled(CustomComboPreset.MNK_AoEUseBrotherhood) &&
-                        ActionReady(Brotherhood) &&
-                        GetTargetHPPercent() >= Config.MNK_AoE_Brotherhood_HP)
-                        return Brotherhood;
-
                     if (IsEnabled(CustomComboPreset.MNK_AoEUseROW) &&
                         ActionReady(RiddleOfWind) &&
                         !HasEffect(Buffs.WindsRumination) &&

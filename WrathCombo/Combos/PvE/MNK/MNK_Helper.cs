@@ -83,7 +83,7 @@ internal partial class MNK
                 (
                     (HasEffect(Buffs.RiddleOfFire) && GetBuffRemainingTime(Buffs.RiddleOfFire) > GCD * 4 + RemainingGCD) || (
                         (Config.MNK_ST_Fast_Phoenix == 1 &&
-                            (GetCooldownRemainingTime(RiddleOfFire) < (GCD * 4 - 1) ||
+                            (GetCooldownRemainingTime(RiddleOfFire) < (GCD * 3 + RemainingGCD + 1) ||
                                 (
                                     GetRemainingCharges(PerfectBalance) == 2 && GetCooldownRemainingTime(RiddleOfFire) < 20
                                 )
@@ -94,8 +94,8 @@ internal partial class MNK
                 return true;
 
             // Even window
-            if ((JustUsed(OriginalHook(Bootshine), GCD * 2) || JustUsed(OriginalHook(DragonKick), GCD * 2) || GetCooldownRemainingTime(Brotherhood) < (GCD * 2 - 0.71) || GetBuffRemainingTime(Buffs.WindsRumination) > 12 || GetCooldownRemainingTime(RiddleOfWind) < 20) &&
-                (GetCooldownRemainingTime(Brotherhood) < (GCD * 3 - 0.71) || HasEffect(Buffs.Brotherhood)))
+            if ((JustUsed(OriginalHook(Bootshine), GCD * 2) || JustUsed(OriginalHook(DragonKick), GCD * 2) || GetCooldownRemainingTime(Brotherhood) < (GCD * 1 + RemainingGCD) || GetBuffRemainingTime(Buffs.WindsRumination) > 12 || GetCooldownRemainingTime(RiddleOfWind) < 20) &&
+                (GetCooldownRemainingTime(Brotherhood) < (GCD * 2 + RemainingGCD) || HasEffect(Buffs.Brotherhood)))
                 return true;
 
             // Low level
@@ -188,7 +188,7 @@ internal partial class MNK
     internal static WrathOpener Opener()
     {
         if (Config.MNK_SelectedOpener == 4)
-            return GetPartyMembers().Any(x => new[] { DNC.JobID, PCT.JobID }.Contains(x.BattleChara.ClassJob.RowId)) ? MNKOpenerLL7 : MNKOpenerLL;
+            return GetPartyMembers().Any(x => x.BattleChara.ClassJob.RowId == DNC.JobID || x.BattleChara.ClassJob.RowId == PCT.JobID) ? MNKOpenerLL7 : MNKOpenerLL;
 
         if (Config.MNK_SelectedOpener == 0)
             return MNKOpenerLL;
