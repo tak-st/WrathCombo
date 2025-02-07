@@ -295,6 +295,7 @@ internal partial class MNK
                         (
                             canMelee &&
                             (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) >= GCD * 3) &&
+                            (Config.MNK_ST_Fast_Phoenix != 1 || !LevelChecked(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) >= GCD * 3) &&
                             (
                                 (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 120 - (GCD * 2)) ||
                                 (!LevelChecked(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) >= 4)
@@ -309,7 +310,12 @@ internal partial class MNK
             {
                 #region Open Lunar
 
-                if ((SolarNadi && !LunarNadi) || BothNadisOpen || (!SolarNadi && !LunarNadi && (GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood))) || OpoOpoChakra >= 2)
+                if ((SolarNadi && !LunarNadi) || BothNadisOpen || OpoOpoChakra >= 2
+                    (
+                        Config.MNK_SelectedOpener % 2 == 0 &&
+                        (!LunarNadi || JustUsed(ElixirBurst, 20)) &&
+                        (GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood))
+                    ))
                     return canMelee ?
                         Gauge.OpoOpoFury == 0
                             ? OriginalHook(DragonKick)
@@ -698,7 +704,12 @@ internal partial class MNK
             {
                 #region Open Lunar
 
-                if ((SolarNadi && !LunarNadi) || BothNadisOpen || (!SolarNadi && !LunarNadi && (GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood))) || OpoOpoChakra >= 2 || CoeurlChakra >= 2)
+                if ((SolarNadi && !LunarNadi) || BothNadisOpen || OpoOpoChakra >= 2 || CoeurlChakra >= 2 ||
+                    (
+                        (!LunarNadi || JustUsed(ElixirBurst, 20)) &&
+                        GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood)
+                    )
+                )
                     return maxPowerSkill;
                 #endregion
 

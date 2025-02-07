@@ -90,12 +90,33 @@ internal partial class MNK
                             )
                         )
                     )
-                ) && !HasEffect(Buffs.Brotherhood) && (!BothNadisOpen || (Config.MNK_ST_Fast_Phoenix == 1 && GetRemainingCharges(PerfectBalance) == 2 && GetCooldownRemainingTime(RiddleOfFire) > 12 && GetCooldownRemainingTime(RiddleOfFire) < 20)))
+                ) && !HasEffect(Buffs.Brotherhood) &&
+                (
+                    Config.MNK_SelectedOpener % 2 != 0 ||
+                    !BothNadisOpen ||
+                    (
+                        Config.MNK_ST_Fast_Phoenix == 1 &&
+                        GetRemainingCharges(PerfectBalance) == 2 &&
+                        GetCooldownRemainingTime(RiddleOfFire) > 12 &&
+                        GetCooldownRemainingTime(RiddleOfFire) < 20
+                    )
+                )
+            )
                 return true;
 
             // Even window
-            if ((JustUsed(OriginalHook(Bootshine), GCD * 2) || JustUsed(OriginalHook(DragonKick), GCD * 2) || GetCooldownRemainingTime(Brotherhood) < (GCD * 1 + RemainingGCD) || GetBuffRemainingTime(Buffs.WindsRumination) > 12 || GetCooldownRemainingTime(RiddleOfWind) < 20) &&
-                (GetCooldownRemainingTime(Brotherhood) < (GCD * 2 + RemainingGCD) || HasEffect(Buffs.Brotherhood)))
+            if ((
+                    JustUsed(OriginalHook(Bootshine), GCD * 2) ||
+                    JustUsed(OriginalHook(DragonKick), GCD * 2) ||
+                    GetCooldownRemainingTime(Brotherhood) < (GCD * 1 + RemainingGCD) ||
+                    GetBuffRemainingTime(Buffs.WindsRumination) > 12 ||
+                    GetCooldownRemainingTime(RiddleOfWind) < 20
+                ) &&
+                (
+                    GetCooldownRemainingTime(Brotherhood) < (GCD * 2 + RemainingGCD) ||
+                    HasEffect(Buffs.Brotherhood)
+                )
+            )
                 return true;
 
             // Low level
