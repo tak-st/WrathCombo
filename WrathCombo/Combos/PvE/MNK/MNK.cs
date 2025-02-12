@@ -308,12 +308,14 @@ internal partial class MNK
             // Perfect Balance
             if (HasEffect(Buffs.PerfectBalance) && (!HasBattleTarget() || isWindBh || InMeleeRange()))
             {
-                #region Open Lunar
+                if (OpoOpoChakra >= 2) return OpoOpoAction;
+                if (RaptorChakra >= 2) return RaptorAction;
+                if (CoeurlChakra >= 2) return CoeurlAction;
 
-                if ((SolarNadi && !LunarNadi) || BothNadisOpen || OpoOpoChakra >= 2
+                #region Open Lunar
+                if ((SolarNadi && !LunarNadi) || BothNadisOpen ||
                     (
-                        Config.MNK_SelectedOpener % 2 == 0 &&
-                        (!LunarNadi || JustUsed(ElixirBurst, 20)) &&
+                        (!LunarNadi || (Config.MNK_ST_Many_PerfectBalance == 0 && JustUsed(ElixirBurst, 20))) &&
                         (GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood))
                     ))
                     return canMelee ?
@@ -410,7 +412,7 @@ internal partial class MNK
             // Standard Beast Chakras
             return DetermineCoreAbility(actionID, IsEnabled(CustomComboPreset.MNK_STUseTrueNorth) &&
                                         (GetRemainingCharges(TrueNorth) >= 2 ||
-                                         (GetRemainingCharges(TrueNorth) >= 1 && (!LevelChecked(RiddleOfFire) || GetCooldownRemainingTime(Brotherhood) <= 45 || GetCooldownRemainingTime(RiddleOfFire) >= GetCooldownRemainingTime(TrueNorth))) ||
+                                         (GetRemainingCharges(TrueNorth) >= 1 && (SolarNadi || compareNextBurstTime(TrueNorth))) ||
                                          HasEffect(Buffs.RiddleOfFire) || HasEffect(Buffs.Brotherhood)));
         }
     }
@@ -642,11 +644,8 @@ internal partial class MNK
                 }
 
                 if (IsEnabled(CustomComboPreset.MNK_AoEUsePerfectBalance) &&
-                    ActionReady(PerfectBalance) &&
-                    JustUsed(maxPowerSkill, GCD) &&
-                    !HasEffect(Buffs.PerfectBalance) &&
-                    (!LevelChecked(Brotherhood) || HasEffect(Buffs.Brotherhood) ||
-                     ((!LevelChecked(RiddleOfFire) || HasEffect(Buffs.RiddleOfFire)) && !JustUsed(PerfectBalance, 20))))
+                    UsePerfectBalanceAoE(maxPowerSkill)
+                    )
                     return PerfectBalance;
 
                 if (IsEnabled(CustomComboPreset.MNK_AoEUseHowlingFist) &&
@@ -702,9 +701,13 @@ internal partial class MNK
             // Perfect Balance
             if (HasEffect(Buffs.PerfectBalance))
             {
+                if (OpoOpoChakra >= 2) return OriginalHook(ArmOfTheDestroyer);
+                if (RaptorChakra >= 2) return raptorAction;
+                if (CoeurlChakra >= 2) return coeurlAction;
+
                 #region Open Lunar
 
-                if ((SolarNadi && !LunarNadi) || BothNadisOpen || OpoOpoChakra >= 2 || CoeurlChakra >= 2 ||
+                if ((SolarNadi && !LunarNadi) || BothNadisOpen ||
                     (
                         (!LunarNadi || JustUsed(ElixirBurst, 20)) &&
                         GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood)

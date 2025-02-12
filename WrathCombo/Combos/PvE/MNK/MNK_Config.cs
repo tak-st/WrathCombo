@@ -24,7 +24,8 @@ internal partial class MNK
             MNK_Balance_Content = new("MNK_Balance_Content", 1),
             MNK_ST_FiresReply_Order = new("MNK_ST_FiresReply_Order", 0),
             MNK_ST_Phoenix_Order = new("MNK_ST_Phoenix_Order", 0),
-            MNK_ST_Fast_Phoenix = new("MNK_ST_Fast_Phoenix", 0);
+            MNK_ST_Fast_Phoenix = new("MNK_ST_Fast_Phoenix", 0),
+            MNK_ST_Many_PerfectBalance = new("MNK_ST_Many_PerfectBalance", 0);
 
         internal static void Draw(CustomComboPreset preset)
         {
@@ -119,6 +120,11 @@ internal partial class MNK
                     break;
 
                 case CustomComboPreset.MNK_STUsePerfectBalance:
+                    DrawHorizontalRadioButton(MNK_ST_Many_PerfectBalance, "バーストチャクラ優先", "奇数バースト時、両チャクラが溜まっている状態に調整します。",
+                        0);
+                    DrawHorizontalRadioButton(MNK_ST_Many_PerfectBalance, "踏鳴使用回数優先", "チャクラの状態よりも踏鳴の使用回数を優先します。",
+                        1);
+                    ImGui.NewLine();
                     DrawHorizontalRadioButton(MNK_ST_Fast_Phoenix, "紅蓮後踏鳴", "奇数バースト時、紅蓮の極意の後に踏鳴を使用します",
                         0);
 

@@ -73,13 +73,42 @@ internal partial class MNK
         return actionId;
     }
 
+    internal static bool compareCooldownTime(uint action1, uint action2, float needTime = 0)
+    {
+        if (!LevelChecked(action1)) return true;
+        if (!LevelChecked(action2)) return true;
+        var ac1Cd = GetCooldownRemainingTime(action1) + needTime;
+        var ac2Cd = GetCooldownRemainingTime(action2);
+        return ac1Cd < ac2Cd;
+    }
+
+    internal static bool compareNextBurstTime(uint action, float needTime = 0)
+    {
+        var acCd = GetCooldownRemainingTime(action) + needTime;
+        var burstCd = GetCooldownRemainingTime(RiddleOfFire);
+        if (!LevelChecked(Brotherhood)) return acCd < burstCd;
+        if (!LevelChecked(RiddleOfFire)) return true;
+        var bhCd = GetCooldownRemainingTime(Brotherhood);
+        if (!(bhCd < burstCd) && bhCd >= 60 && burstCd <= (bhCd - 60))
+        {
+            burstCd = bhCd - 60;
+        }
+        else
+        {
+            burstCd = bhCd;
+        }
+
+        return acCd < burstCd;
+    }
+
+
     internal static bool UsePerfectBalance()
     {
         if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasEffect(Buffs.FormlessFist) && Gauge.BlitzTimeRemaining <= 0 && (Config.MNK_ST_FiresReply_Order != 0 || !HasEffect(Buffs.FiresRumination)))
         {
             // Odd window
             if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD)) &&
-                GetCooldownRemainingTime(PerfectBalance) + 40 < GetCooldownRemainingTime(Brotherhood) + 10 &&
+                compareCooldownTime(PerfectBalance, Brotherhood, 30) &&
                 (
                     (HasEffect(Buffs.RiddleOfFire) && GetBuffRemainingTime(Buffs.RiddleOfFire) > GCD * 4 + RemainingGCD) || (
                         (Config.MNK_ST_Fast_Phoenix == 1 &&
@@ -92,7 +121,7 @@ internal partial class MNK
                     )
                 ) && !HasEffect(Buffs.Brotherhood) &&
                 (
-                    Config.MNK_SelectedOpener % 2 != 0 ||
+                    Config.MNK_ST_Many_PerfectBalance == 1 ||
                     !BothNadisOpen ||
                     (
                         Config.MNK_ST_Fast_Phoenix == 1 &&
@@ -124,12 +153,72 @@ internal partial class MNK
                 ((HasEffect(Buffs.RiddleOfFire) && !LevelChecked(Brotherhood)) ||
                  !LevelChecked(RiddleOfFire)))
                 return true;
+
+            if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD)) &&
+                compareNextBurstTime(PerfectBalance, 30) &&
+                (Config.MNK_ST_Many_PerfectBalance == 1 || !BothNadisOpen))
+            {
+                return true;
+            }
         }
 
         if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasBattleTarget() && HasEffect(Buffs.RiddleOfFire))
         {
             // Odd window
-            if (!JustUsed(PerfectBalance, 20) && !HasEffect(Buffs.Brotherhood) && !BothNadisOpen && GetBuffRemainingTime(Buffs.RiddleOfFire) <= 20 - GCD)
+            if (compareCooldownTime(PerfectBalance, Brotherhood, 30) && !HasEffect(Buffs.Brotherhood) && !BothNadisOpen && GetBuffRemainingTime(Buffs.RiddleOfFire) <= 20 - GCD)
+                return true;
+
+            // Even window
+            if (HasEffect(Buffs.Brotherhood))
+                return true;
+
+            if (compareNextBurstTime(PerfectBalance, 30) &&
+                (Config.MNK_ST_Many_PerfectBalance == 1 || !BothNadisOpen))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    internal static bool UsePerfectBalanceAoE(uint maxPowerSkill = OriginalHook(ArmOfTheDestroyer))
+    {
+        if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasEffect(Buffs.FormlessFist) && Gauge.BlitzTimeRemaining <= 0 && !HasEffect(Buffs.FiresRumination))
+        {
+            // Odd window
+            if (
+                (JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD) || JustUsed(maxPowerSkill, GCD)) &&
+                compareCooldownTime(PerfectBalance, Brotherhood, 30) &&
+                HasEffect(Buffs.RiddleOfFire) && !HasEffect(Buffs.Brotherhood)
+            )
+                return true;
+
+            // Even window
+            if (
+                (JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD) || JustUsed(maxPowerSkill, GCD)) &&
+                HasEffect(Buffs.Brotherhood)
+            )
+                return true;
+
+            // Low level
+            if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD) || JustUsed(maxPowerSkill, GCD)) &&
+                ((HasEffect(Buffs.RiddleOfFire) && !LevelChecked(Brotherhood)) ||
+                 !LevelChecked(RiddleOfFire)))
+                return true;
+
+            if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD || JustUsed(maxPowerSkill, GCD))) &&
+                compareNextBurstTime(PerfectBalance, 30) &&
+                (Config.MNK_ST_Many_PerfectBalance == 1 || !BothNadisOpen))
+            {
+                return true;
+            }
+        }
+
+        if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasBattleTarget() && HasEffect(Buffs.RiddleOfFire))
+        {
+            // Odd window
+            if (compareCooldownTime(PerfectBalance, Brotherhood, 30) && !HasEffect(Buffs.Brotherhood) && !BothNadisOpen && GetBuffRemainingTime(Buffs.RiddleOfFire) <= 20 - GCD)
                 return true;
 
             // Even window
