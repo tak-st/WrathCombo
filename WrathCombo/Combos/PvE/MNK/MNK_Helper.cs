@@ -182,7 +182,7 @@ internal partial class MNK
         return false;
     }
 
-    internal static bool UsePerfectBalanceAoE(uint maxPowerSkill = OriginalHook(ArmOfTheDestroyer))
+    internal static bool UsePerfectBalanceAoE(uint maxPowerSkill = 0)
     {
         if (ActionReady(PerfectBalance) && !HasEffect(Buffs.PerfectBalance) && !HasEffect(Buffs.FormlessFist) && Gauge.BlitzTimeRemaining <= 0 && !HasEffect(Buffs.FiresRumination))
         {
@@ -207,7 +207,7 @@ internal partial class MNK
                  !LevelChecked(RiddleOfFire)))
                 return true;
 
-            if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD || JustUsed(maxPowerSkill, GCD))) &&
+            if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD) || JustUsed(maxPowerSkill, GCD)) &&
                 compareNextBurstTime(PerfectBalance, 30) &&
                 (Config.MNK_ST_Many_PerfectBalance == 1 || !BothNadisOpen))
             {
