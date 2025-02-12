@@ -2812,7 +2812,7 @@ public enum CustomComboPreset
     #region Monk Advanced ST
 
     [AutoAction(false, false)]
-    [ReplaceSkill(MNK.Bootshine, MNK.LeapingOpo)]
+    [ReplaceSkill(MNK.Bootshine, MNK.LeapingOpo, MNK.DragonKick, MNK.Thunderclap)]
     [ConflictingCombos(MNK_ST_BeastChakras, MNK_ST_SimpleMode)]
     [CustomComboInfo("アドバンストモード - 単体",
         "連撃をフルワンボタン単体ローテーションに置き換えます。\nローテーションをカスタマイズしたい場合に最適な機能です。", MNK.JobID)]
@@ -2867,11 +2867,11 @@ public enum CustomComboPreset
     MNK_STUseMasterfulBlitz = 9039,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("トゥルーノース", "ポジショナルでない場合に動的にトゥルーノースを自動で使用します。", MNK.JobID)]
+    [CustomComboInfo("トゥルーノース", "方向指定が取れない場合にトゥルーノースを自動で使用します。", MNK.JobID)]
     MNK_STUseTrueNorth = 9014,
 
     [ParentCombo(MNK_ST_AdvancedMode)]
-    [CustomComboInfo("コンボヒールオプション", "ブラッドバスとセカンドウィンドを自動で使用します。", MNK.JobID)]
+    [CustomComboInfo("コンボヒールオプション", "ブラッドバスと内丹を自動で使用します。", MNK.JobID)]
     MNK_ST_ComboHeals = 9018,
 
     #endregion
