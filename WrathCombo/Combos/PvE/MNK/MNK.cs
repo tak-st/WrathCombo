@@ -244,6 +244,11 @@ internal partial class MNK
                     actionID is not DragonKick)
                     return PerfectBalance;
 
+                if (IsEnabled(CustomComboPreset.MNK_STUseTheForbiddenChakra) &&
+                    Gauge.Chakra >= 5 && InCombat() && canMelee && GetCooldownRemainingTime(Brotherhood) >= GCD &&
+                    LevelChecked(SteeledMeditation))
+                    return OriginalHook(SteeledMeditation);
+
                 if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat())
                 {
 
@@ -256,11 +261,6 @@ internal partial class MNK
                         GetTargetHPPercent() >= Config.MNK_ST_RiddleOfWind_HP)
                         return RiddleOfWind;
                 }
-
-                if (IsEnabled(CustomComboPreset.MNK_STUseTheForbiddenChakra) &&
-                    Gauge.Chakra >= 5 && InCombat() && canMelee && GetCooldownRemainingTime(Brotherhood) >= GCD &&
-                    LevelChecked(SteeledMeditation))
-                    return OriginalHook(SteeledMeditation);
 
                 if (IsEnabled(CustomComboPreset.MNK_ST_ComboHeals) && PlayerHealthPercentageHp() <= 99)
                 {
@@ -634,15 +634,6 @@ internal partial class MNK
                     IsOffCooldown(Variant.VariantRampart))
                     return Variant.VariantRampart;
 
-                if (IsEnabled(CustomComboPreset.MNK_AoEUseBuffs))
-                {
-                    if (IsEnabled(CustomComboPreset.MNK_AoEUseROW) &&
-                        ActionReady(RiddleOfWind) &&
-                        !HasEffect(Buffs.WindsRumination) &&
-                        GetTargetHPPercent() >= Config.MNK_AoE_RiddleOfWind_HP)
-                        return RiddleOfWind;
-                }
-
                 if (IsEnabled(CustomComboPreset.MNK_AoEUsePerfectBalance) &&
                     UsePerfectBalanceAoE(maxPowerSkill)
                     )
@@ -652,6 +643,15 @@ internal partial class MNK
                     Gauge.Chakra >= 5 && HasBattleTarget() && InCombat() &&
                     LevelChecked(InspiritedMeditation))
                     return OriginalHook(Enlightenment);
+
+                if (IsEnabled(CustomComboPreset.MNK_AoEUseBuffs))
+                {
+                    if (IsEnabled(CustomComboPreset.MNK_AoEUseROW) &&
+                        ActionReady(RiddleOfWind) &&
+                        !HasEffect(Buffs.WindsRumination) &&
+                        GetTargetHPPercent() >= Config.MNK_AoE_RiddleOfWind_HP)
+                        return RiddleOfWind;
+                }
 
                 if (IsEnabled(CustomComboPreset.MNK_AoE_ComboHeals))
                 {
