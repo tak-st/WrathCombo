@@ -295,7 +295,7 @@ internal partial class MNK
                         (
                             canMelee &&
                             (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) >= GCD * 3) &&
-                            (Config.MNK_ST_Fast_Phoenix != 1 || !LevelChecked(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) >= GCD * 3) &&
+                            (Config.MNK_ST_Fast_Phoenix != 1 || !LevelChecked(RiddleOfFire) || GetBuffRemainingTime(Buffs.Brotherhood) < 12 || GetCooldownRemainingTime(RiddleOfFire) >= GCD * 3) &&
                             (
                                 (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 120 - (GCD * 2)) ||
                                 (!LevelChecked(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) >= 4)
