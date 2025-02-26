@@ -31,19 +31,21 @@ internal partial class MNK
 
     internal static uint DetermineCoreAbility(uint actionId, bool useTrueNorthIfEnabled)
     {
+        bool isPreserveMode = originalActionId is DragonKick;
+        bool canMelee = HasBattleTarget() && InMeleeRange();
         if (HasEffect(Buffs.OpoOpoForm) || HasEffect(Buffs.FormlessFist))
-            return Gauge.OpoOpoFury == 0 && LevelChecked(OriginalHook(DragonKick))
+            return (Gauge.OpoOpoFury == 0 || isPreserveMode) && LevelChecked(OriginalHook(DragonKick))
                 ? OriginalHook(DragonKick)
                 : OriginalHook(Bootshine);
 
         if (HasEffect(Buffs.RaptorForm))
-            return Gauge.RaptorFury == 0 && LevelChecked(TwinSnakes)
+            return (Gauge.RaptorFury == 0 || isPreserveMode) && LevelChecked(TwinSnakes)
                 ? TwinSnakes
                 : OriginalHook(TrueStrike);
 
         if (HasEffect(Buffs.CoeurlForm))
         {
-            if (Gauge.CoeurlFury == 0 && LevelChecked(Demolish))
+            if ((Gauge.CoeurlFury == 0 || isPreserveMode) && LevelChecked(Demolish))
             {
                 if (!OnTargetsRear() &&
                     TargetNeedsPositionals() &&
@@ -69,6 +71,11 @@ internal partial class MNK
                 return OriginalHook(SnapPunch);
             }
         }
+
+        if (canMelee)
+            return (Gauge.OpoOpoFury == 0 || isPreserveMode) && LevelChecked(OriginalHook(DragonKick))
+                ? OriginalHook(DragonKick)
+                : OriginalHook(Bootshine);
 
         return actionId;
     }
@@ -276,6 +283,7 @@ internal partial class MNK
             RaptorForm = 108,
             CoeurlForm = 109,
             PerfectBalance = 110,
+            EarthsResolve = 1180,
             RiddleOfFire = 1181,
             RiddleOfWind = 2687,
             FormlessFist = 2513,
@@ -293,7 +301,7 @@ internal partial class MNK
     internal static WrathOpener Opener()
     {
         if (Config.MNK_SelectedOpener == 4)
-            return GetPartyMembers().Any(x => x.BattleChara.ClassJob.RowId == DNC.JobID || x.BattleChara.ClassJob.RowId == PCT.JobID) ? MNKOpenerLL7 : MNKOpenerLL;
+            return GetPartyMembers().Any(x => x.BattleChara.ClassJob.RowId == DNC.JobID) ? MNKOpenerLL7 : MNKOpenerLL;
 
         if (Config.MNK_SelectedOpener == 0)
             return MNKOpenerLL;

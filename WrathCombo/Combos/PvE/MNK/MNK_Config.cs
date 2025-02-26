@@ -34,19 +34,19 @@ internal partial class MNK
             {
                 case CustomComboPreset.MNK_ST_ComboHeals:
                     DrawSliderInt(0, 100, MNK_ST_SecondWind_Threshold,
-                        $"PT平均から自身のHP%が乖離したら {All.SecondWind.ActionName()} を使用 (0で無効)");
+                        $"PT平均から自身のHP%が乖離したら {All.SecondWind.ActionName()} を使用 (100で無効)");
 
                     DrawSliderInt(0, 100, MNK_ST_Bloodbath_Threshold,
-                        $"PT平均から自身のHP%が乖離したら {All.Bloodbath.ActionName()} を使用 (0で無効)");
+                        $"PT平均から自身のHP%が乖離したら {All.Bloodbath.ActionName()} を使用 (100で無効)");
 
                     break;
 
                 case CustomComboPreset.MNK_AoE_ComboHeals:
                     DrawSliderInt(0, 100, MNK_AoE_SecondWind_Threshold,
-                        $"PT平均から自身のHP%が乖離したら {All.SecondWind.ActionName()} を使用 (0で無効)");
+                        $"PT平均から自身のHP%が乖離したら {All.SecondWind.ActionName()} を使用 (100で無効)");
 
                     DrawSliderInt(0, 100, MNK_AoE_Bloodbath_Threshold,
-                        $"PT平均から自身のHP%が乖離したら {All.Bloodbath.ActionName()} を使用 (0で無効)");
+                        $"PT平均から自身のHP%が乖離したら {All.Bloodbath.ActionName()} を使用 (100で無効)");
 
                     DrawSliderInt(0, 100, MNK_AoE_RiddleOfEarth_Threshold,
                         $"{RiddleOfEarth.ActionName()} を使用するPT平均の最低HP% (0で無効)");
@@ -90,7 +90,7 @@ internal partial class MNK
                     break;
 
                 case CustomComboPreset.MNK_STUseOpener:
-                    DrawHorizontalRadioButton(MNK_SelectedOpener, "真真 自動", "5秒バースト 踊り子・ピクト存在時、7秒バースト",
+                    DrawHorizontalRadioButton(MNK_SelectedOpener, "真真 自動", "5秒バースト PTに踊り子がいる場合、7秒バースト",
                         4);
 
                     DrawHorizontalRadioButton(MNK_SelectedOpener, "真真 5秒", "真真回し / 5秒バースト",
