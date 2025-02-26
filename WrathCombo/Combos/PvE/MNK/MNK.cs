@@ -324,11 +324,13 @@ internal partial class MNK
                                 : OriginalHook(TrueStrike)
                             : OriginalHook(FourPointFury);
 
-                uint CoeurlAction = canMelee ?
+                uint CoeurlAction = canMelee ? !positionCheck(actionID) && useTrueNorth ? TrueNorth :
                             Gauge.CoeurlFury == 0 || isPreserveMode
                                 ? OriginalHook(Demolish)
                                 : OriginalHook(SnapPunch)
                             : OriginalHook(Rockbreaker);
+
+                bool useTrueNorth = IsEnabled(CustomComboPreset.MNK_STUseTrueNorth) && !isPreserveMode;
 
                 if (OpoOpoChakra >= 2) return OpoOpoAction;
                 if (RaptorChakra >= 2) return RaptorAction;
@@ -371,6 +373,19 @@ internal partial class MNK
                         if (RaptorChakra == 0) return RaptorAction;
                         if (CoeurlChakra == 0) return CoeurlAction;
                         if (OpoOpoChakra == 0) return OpoOpoAction;
+                    }
+                    else if (Config.MNK_ST_Phoenix_Order == 4)
+                    {
+                        if (CoeurlChakra == 0 && positionCheck(actionID, false))
+                        {
+                            return CoeurlAction;
+                        }
+                        else
+                        {
+                            if (RaptorChakra == 0) return RaptorAction;
+                            if (OpoOpoChakra == 0) return OpoOpoAction;
+                            if (CoeurlChakra == 0) return CoeurlAction;
+                        }
                     }
                     else
                     {

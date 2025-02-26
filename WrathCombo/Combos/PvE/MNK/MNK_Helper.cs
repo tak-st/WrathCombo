@@ -109,6 +109,32 @@ internal partial class MNK
         return acCd < burstCd;
     }
 
+    internal static bool positionCheck(uint actionId, WeaveOnly = true)
+    {
+        bool isPreserveMode = originalActionId is DragonKick;
+        if ((Gauge.CoeurlFury == 0 || isPreserveMode) && LevelChecked(Demolish))
+        {
+            if (!OnTargetsRear() &&
+                TargetNeedsPositionals() &&
+                (!WeaveOnly || (!HasEffect(Buffs.TrueNorth) &&
+                CanWeave() &&
+                ActionReady(TrueNorth))))
+                return false;
+            return true;
+        }
+
+        if (LevelChecked(SnapPunch))
+        {
+            if (!OnTargetsFlank() &&
+                TargetNeedsPositionals() &&
+                (!WeaveOnly || (!HasEffect(Buffs.TrueNorth) &&
+                CanWeave() &&
+                ActionReady(TrueNorth))))
+                return false;
+            return true;
+        }
+    }
+
 
     internal static bool UsePerfectBalance()
     {

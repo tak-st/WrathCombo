@@ -146,6 +146,9 @@ internal partial class MNK
 
                     DrawHorizontalRadioButton(MNK_ST_Phoenix_Order, "直前の型依存", "3の型の時に踏鳴の場合、3→2→1 それ以外は、2→3→1",
                         3);
+
+                    DrawHorizontalRadioButton(MNK_ST_Phoenix_Order, "現在方向依存", "2→1→3、方向指定が合っている場合は3をそのタイミングで使用",
+                        4);
                     break;
 
 
