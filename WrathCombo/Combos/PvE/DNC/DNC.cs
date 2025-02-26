@@ -1,9 +1,7 @@
 ﻿#region
 
-using Dalamud.Game.ClientState.JobGauge.Types;
 using WrathCombo.Combos.PvE.Content;
 using WrathCombo.CustomComboNS;
-using WrathCombo.Services;
 
 // ReSharper disable UnusedType.Global
 // ReSharper disable ClassNeverInstantiated.Global
@@ -67,8 +65,8 @@ internal partial class DNC
             if (Config.DNC_ST_ADV_AntiDrift == (int)Config.AntiDrift.Hold ||
                 Config.DNC_ST_ADV_AntiDrift == (int)Config.AntiDrift.Both)
             {
-                longAlignmentThreshold = gcd;
-                shortAlignmentThreshold = gcd;
+                longAlignmentThreshold = (float)GCD;
+                shortAlignmentThreshold = (float)GCD;
             }
 
             var needToFinish =
@@ -222,19 +220,20 @@ internal partial class DNC
                     return FanDance4;
             }
 
-            // ST Interrupt
-            if (IsEnabled(CustomComboPreset.DNC_ST_Adv_Interrupt) &&
-                CanInterruptEnemy() &&
-                ActionReady(All.HeadGraze) &&
-                !HasEffect(Buffs.TechnicalFinish))
-                return All.HeadGraze;
-
             // Variant Cure
             if (IsEnabled(CustomComboPreset.DNC_Variant_Cure) &&
                 IsEnabled(Variant.VariantCure) &&
                 PlayerHealthPercentageHp() <=
                 GetOptionValue(Config.DNCVariantCurePercent))
                 return Variant.VariantCure;
+
+            // ST Interrupt
+            if (IsEnabled(CustomComboPreset.DNC_ST_Adv_Interrupt) &&
+                CanWeave() &&
+                CanInterruptEnemy() &&
+                ActionReady(All.HeadGraze) &&
+                !HasEffect(Buffs.TechnicalFinish))
+                return All.HeadGraze;
 
             // Variant Rampart
             if (IsEnabled(CustomComboPreset.DNC_Variant_Rampart) &&
@@ -245,13 +244,19 @@ internal partial class DNC
 
             if (CanWeave() && !WasLastWeaponskill(TechnicalFinish4))
             {
-                if (HasEffect(Buffs.ThreeFoldFanDance))
-                    return FanDance3;
+                // ST Fans
+                if (IsEnabled(CustomComboPreset.DNC_ST_Adv_FanProccs))
+                {
+                    if (IsEnabled(CustomComboPreset.DNC_ST_Adv_FanProcc3) &&
+                        HasEffect(Buffs.ThreeFoldFanDance))
+                        return FanDance3;
 
-                if (HasEffect(Buffs.FourFoldFanDance))
-                    return FanDance4;
+                    if (IsEnabled(CustomComboPreset.DNC_ST_Adv_FanProcc4) &&
+                        HasEffect(Buffs.FourFoldFanDance))
+                        return FanDance4;
+                }
 
-                // ST Feathers & Fans
+                // ST Feathers
                 if (IsEnabled(CustomComboPreset.DNC_ST_Adv_Feathers) &&
                     LevelChecked(FanDance1))
                 {
@@ -558,16 +563,17 @@ internal partial class DNC
                     return FanDance4;
             }
 
-            // ST Interrupt
-            if (CanInterruptEnemy() &&
-                ActionReady(All.HeadGraze) &&
-                !HasEffect(Buffs.TechnicalFinish))
-                return All.HeadGraze;
-
             // Variant Cure
             if (IsEnabled(Variant.VariantCure) &&
                 PlayerHealthPercentageHp() <= 50)
                 return Variant.VariantCure;
+
+            // ST Interrupt
+            if (CanInterruptEnemy() &&
+                CanWeave() &&
+                ActionReady(All.HeadGraze) &&
+                !HasEffect(Buffs.TechnicalFinish))
+                return All.HeadGraze;
 
             // Variant Rampart
             if (IsEnabled(Variant.VariantRampart) &&
@@ -601,9 +607,7 @@ internal partial class DNC
                         // FD1 Pooling
                         if (Gauge.Feathers > 3 &&
                             (HasEffect(Buffs.SilkenSymmetry) ||
-                             HasEffect(Buffs.SilkenFlow))
-                           )
-
+                             HasEffect(Buffs.SilkenFlow)))
                             return FanDance1;
                     }
 
@@ -819,17 +823,17 @@ internal partial class DNC
                 !HasEffect(Buffs.FinishingMoveReady))
                 return Flourish;
 
-            // AoE Interrupt
-            if (IsEnabled(CustomComboPreset.DNC_AoE_Adv_Interrupt) &&
-                CanInterruptEnemy() && ActionReady(All.HeadGraze) &&
-                !HasEffect(Buffs.TechnicalFinish))
-                return All.HeadGraze;
-
             if (IsEnabled(CustomComboPreset.DNC_Variant_Cure) &&
                 IsEnabled(Variant.VariantCure) &&
                 PlayerHealthPercentageHp() <=
                 GetOptionValue(Config.DNCVariantCurePercent))
                 return Variant.VariantCure;
+
+            // AoE Interrupt
+            if (IsEnabled(CustomComboPreset.DNC_AoE_Adv_Interrupt) &&
+                CanInterruptEnemy() && ActionReady(All.HeadGraze) &&
+                CanWeave() && !HasEffect(Buffs.TechnicalFinish))
+                return All.HeadGraze;
 
             if (IsEnabled(CustomComboPreset.DNC_Variant_Rampart) &&
                 IsEnabled(Variant.VariantRampart) &&
@@ -839,14 +843,16 @@ internal partial class DNC
 
             if (CanWeave() && !WasLastWeaponskill(TechnicalFinish4))
             {
-                // AoE Feathers & Fans
+                // AoE Fan 3
+                if (IsEnabled(CustomComboPreset.DNC_AoE_Adv_FanProccs) &&
+                    IsEnabled(CustomComboPreset.DNC_AoE_Adv_FanProcc3) &&
+                    HasEffect(Buffs.ThreeFoldFanDance))
+                    return FanDance3;
+
+                // AoE Feathers
                 if (IsEnabled(CustomComboPreset.DNC_AoE_Adv_Feathers) &&
                     LevelChecked(FanDance1))
                 {
-                    // FD3
-                    if (HasEffect(Buffs.ThreeFoldFanDance))
-                        return FanDance3;
-
                     if (LevelChecked(FanDance2))
                     {
                         if (LevelChecked(TechnicalStep))
@@ -875,7 +881,10 @@ internal partial class DNC
                         return FanDance1;
                 }
 
-                if (HasEffect(Buffs.FourFoldFanDance))
+                // AoE Fan 4
+                if (IsEnabled(CustomComboPreset.DNC_AoE_Adv_FanProccs) &&
+                    IsEnabled(CustomComboPreset.DNC_AoE_Adv_FanProcc4) &&
+                    HasEffect(Buffs.FourFoldFanDance))
                     return FanDance4;
 
                 // AoE Panic Heals
@@ -1110,14 +1119,14 @@ internal partial class DNC
                 !HasEffect(Buffs.FinishingMoveReady))
                 return Flourish;
 
-            // AoE Interrupt
-            if (CanInterruptEnemy() && ActionReady(All.HeadGraze) &&
-                !HasEffect(Buffs.TechnicalFinish))
-                return All.HeadGraze;
-
             if (IsEnabled(Variant.VariantCure) &&
                 PlayerHealthPercentageHp() <= 50)
                 return Variant.VariantCure;
+
+            // AoE Interrupt
+            if (CanInterruptEnemy() && ActionReady(All.HeadGraze) &&
+                CanWeave() && !HasEffect(Buffs.TechnicalFinish))
+                return All.HeadGraze;
 
             if (IsEnabled(Variant.VariantRampart) &&
                 IsOffCooldown(Variant.VariantRampart) &&
