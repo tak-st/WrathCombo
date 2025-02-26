@@ -89,13 +89,14 @@ internal partial class MNK
         if (!LevelChecked(Brotherhood)) return acCd < burstCd;
         if (!LevelChecked(RiddleOfFire)) return true;
         var bhCd = GetCooldownRemainingTime(Brotherhood);
-        if (!(bhCd < burstCd) && bhCd >= 60 && burstCd <= (bhCd - 60))
-        {
-            burstCd = bhCd - 60;
-        }
-        else
+        var diff = bhCd - burstCd;
+        if (diff <= 0 || !(diff >= 54 && diff <= 66))
         {
             burstCd = bhCd;
+        }
+        else if ((bhCd - 54) > burstCd)
+        {
+            burstCd = (bhCd - 54);
         }
 
         return acCd < burstCd;
@@ -138,8 +139,8 @@ internal partial class MNK
                     JustUsed(OriginalHook(Bootshine), GCD * 2) ||
                     JustUsed(OriginalHook(DragonKick), GCD * 2) ||
                     GetCooldownRemainingTime(Brotherhood) < (GCD * 1 + RemainingGCD) ||
-                    GetBuffRemainingTime(Buffs.WindsRumination) > 12 ||
-                    GetCooldownRemainingTime(RiddleOfWind) < 20
+                    GetBuffRemainingTime(Buffs.WindsRumination) >= (GCD * 3 + RemainingGCD) ||
+                    GetCooldownRemainingTime(RiddleOfWind) < (17.35 + GCD * 2 + RemainingGCD)
                 ) &&
                 (
                     GetCooldownRemainingTime(Brotherhood) < (GCD * 2 + RemainingGCD) ||
@@ -171,12 +172,6 @@ internal partial class MNK
             // Even window
             if (HasEffect(Buffs.Brotherhood))
                 return true;
-
-            if (compareNextBurstTime(PerfectBalance, 30) &&
-                (Config.MNK_ST_Many_PerfectBalance == 1 || !BothNadisOpen))
-            {
-                return true;
-            }
         }
 
         return false;

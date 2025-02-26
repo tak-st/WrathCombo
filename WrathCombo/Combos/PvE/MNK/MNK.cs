@@ -16,7 +16,7 @@ internal partial class MNK
             if ((!InCombat() || !InMeleeRange()) &&
                 Gauge.Chakra < 5 &&
                 !HasEffect(Buffs.RiddleOfFire) &&
-                LevelChecked(SteeledMeditation))
+                LevelChecked(SteelPeak))
                 return OriginalHook(SteeledMeditation);
 
             if (!InCombat() && LevelChecked(FormShift) &&
@@ -60,7 +60,7 @@ internal partial class MNK
                 if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 40 && ActionReady(All.Bloodbath))
                     return All.Bloodbath;
 
-                if (Gauge.Chakra >= 5 && InCombat() && LevelChecked(SteeledMeditation))
+                if (Gauge.Chakra >= 5 && InCombat() && LevelChecked(SteelPeak))
                     return OriginalHook(SteeledMeditation);
             }
 
@@ -138,6 +138,7 @@ internal partial class MNK
             if (actionID is not (Bootshine or LeapingOpo or DragonKick or Thunderclap))
                 return actionID;
 
+            uint originalActionId = actionID;
             bool canMelee = HasBattleTarget() && InMeleeRange();
             bool isWindBh = (HasEffect(Buffs.Brotherhood) && JustUsed(RiddleOfWind, 15 + (20 - GetBuffRemainingTime(Buffs.Brotherhood))));
             bool readyBlitz = Gauge.BlitzTimeRemaining > 0;
@@ -174,7 +175,7 @@ internal partial class MNK
                 (!InCombat() || !HasBattleTarget() || !InMeleeRange()) &&
                 Gauge.Chakra < 5 &&
                 !HasEffect(Buffs.Brotherhood) &&
-                LevelChecked(SteeledMeditation))
+                LevelChecked(SteelPeak))
                 return OriginalHook(SteeledMeditation);
 
             if (IsEnabled(CustomComboPreset.MNK_STUseFormShift) &&
@@ -187,7 +188,7 @@ internal partial class MNK
             if (IsEnabled(CustomComboPreset.MNK_STUseMeditation) &&
                 (!InCombat() || !HasBattleTarget() || !InMeleeRange()) &&
                 Gauge.Chakra < 5 &&
-                LevelChecked(SteeledMeditation) &&
+                LevelChecked(SteelPeak) &&
                 (!isWindBh || readyBlitz))
                 return OriginalHook(SteeledMeditation);
 
@@ -210,7 +211,7 @@ internal partial class MNK
             if (IsEnabled(CustomComboPreset.MNK_STUseBrotherhood) &&
                 IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat() &&
                 LevelChecked(Brotherhood) &&
-                canMelee && actionID is not DragonKick &&
+                canMelee && originalActionId is not DragonKick &&
                 (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.7) &&
                 ((HasEffect(Buffs.PerfectBalance) && (((JustUsed(Brotherhood, 124) && (GetBuffRemainingTime(Buffs.WindsRumination) <= 2 && GetCooldownRemainingTime(RiddleOfWind) > 17.35)) && GetBuffStacks(Buffs.PerfectBalance) <= 2) || GetBuffStacks(Buffs.PerfectBalance) <= 1)) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 1) || GetRemainingCharges(PerfectBalance) <= 0) &&
                 GetTargetHPPercent() >= Config.MNK_ST_Brotherhood_HP
@@ -245,8 +246,8 @@ internal partial class MNK
                     return PerfectBalance;
 
                 if (IsEnabled(CustomComboPreset.MNK_STUseTheForbiddenChakra) &&
-                    Gauge.Chakra >= 5 && InCombat() && canMelee && GetCooldownRemainingTime(Brotherhood) >= GCD &&
-                    LevelChecked(SteeledMeditation))
+                    Gauge.Chakra >= 5 && InCombat() && canMelee && (!LevelChecked(Brotherhood) || !JustUsed(Brotherhood, 122) ||  GetCooldownRemainingTime(Brotherhood) >= GCD) &&
+                    LevelChecked(SteelPeak))
                     return OriginalHook(SteeledMeditation);
 
                 if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat())
@@ -294,11 +295,12 @@ internal partial class MNK
                         (!BothNadisOpen && Gauge.BlitzTimeRemaining <= 4000) ||
                         (
                             canMelee &&
-                            (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) >= GCD * 3) &&
-                            (Config.MNK_ST_Fast_Phoenix != 1 || !LevelChecked(RiddleOfFire) || GetBuffRemainingTime(Buffs.Brotherhood) < 12 || GetCooldownRemainingTime(RiddleOfFire) >= GCD * 3) &&
+                            (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) >= GCD * 3 || originalActionId is DragonKick) &&
+                            (Config.MNK_ST_Fast_Phoenix != 1 || !LevelChecked(RiddleOfFire) || GetBuffRemainingTime(Buffs.Brotherhood) < 12 || GetCooldownRemainingTime(RiddleOfFire) >= GCD * 3 || originalActionId is DragonKick) &&
                             (
                                 (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 120 - (GCD * 2)) ||
-                                (!LevelChecked(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) >= 4)
+                                (!LevelChecked(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) >= 4) ||
+                                originalActionId is DragonKick
                             )
                         )
                     )
@@ -316,31 +318,31 @@ internal partial class MNK
 
                 uint RaptorAction = canMelee ?
                             Gauge.RaptorFury == 0
-                                ? TwinSnakes
+                                ? OriginalHook(TwinSnakes)
                                 : OriginalHook(TrueStrike)
-                            : FourPointFury;
+                            : OriginalHook(FourPointFury);
 
                 uint CoeurlAction = canMelee ?
                             Gauge.CoeurlFury == 0
-                                ? Demolish
+                                ? OriginalHook(Demolish)
                                 : OriginalHook(SnapPunch)
-                            : Rockbreaker;
+                            : OriginalHook(Rockbreaker);
 
                 if (OpoOpoChakra >= 2) return OpoOpoAction;
                 if (RaptorChakra >= 2) return RaptorAction;
                 if (CoeurlChakra >= 2) return CoeurlAction;
 
+                if (OpoOpoChakra >= 1 && RaptorChakra >= 1) return CoeurlAction;
+                if (OpoOpoChakra >= 1 && CoeurlChakra >= 1) return RaptorAction;
+                if (CoeurlChakra >= 1 && RaptorChakra >= 1) return OpoOpoAction;
+
                 #region Open Lunar
-                if ((SolarNadi && !LunarNadi) || BothNadisOpen ||
+                if ((SolarNadi && !LunarNadi) || BothNadisOpen || 
                     (
                         (!LunarNadi || (Config.MNK_ST_Many_PerfectBalance == 0 && JustUsed(ElixirBurst, 20))) &&
                         (GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood))
                     ))
-                    return canMelee ?
-                        Gauge.OpoOpoFury == 0
-                            ? OriginalHook(DragonKick)
-                            : OriginalHook(Bootshine)
-                        : OriginalHook(ArmOfTheDestroyer);
+                    return OpoOpoAction;
 
                 #endregion
 
@@ -705,6 +707,10 @@ internal partial class MNK
                 if (OpoOpoChakra >= 2) return OriginalHook(ArmOfTheDestroyer);
                 if (RaptorChakra >= 2) return raptorAction;
                 if (CoeurlChakra >= 2) return coeurlAction;
+
+                if (OpoOpoChakra >= 1 && RaptorChakra >= 1) return coeurlAction;
+                if (OpoOpoChakra >= 1 && CoeurlChakra >= 1) return raptorAction;
+                if (CoeurlChakra >= 1 && RaptorChakra >= 1) return OriginalHook(ArmOfTheDestroyer);
 
                 #region Open Lunar
 
