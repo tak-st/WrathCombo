@@ -69,7 +69,7 @@ internal partial class MNK
 
             if (HasEffect(Buffs.FiresRumination) &&
                 !HasEffect(Buffs.FormlessFist) &&
-                !JustUsed(RiddleOfFire, 4) && 
+                !JustUsed(RiddleOfFire, 4) &&
                 (JustUsed(OriginalHook(Bootshine)) ||
                  JustUsed(DragonKick) ||
                  GetBuffRemainingTime(Buffs.FiresRumination) < 4))
@@ -230,6 +230,8 @@ internal partial class MNK
             if (IsEnabled(CustomComboPreset.MNK_STUseBrotherhood) &&
                 IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat() &&
                 LevelChecked(Brotherhood) &&
+                (!Config.MNK_ST_Brotherhood_ROFLastOnly || !HasEffect(Buffs.RiddleOfFire)) &&
+                (!MNK_ST_Brotherhood_AdjustROF || JustUsed(Brotherhood, 124) || GetCooldownRemainingTime(RiddleOfFire) <= 0.7) &&
                 canMelee && canBurst &&
                 (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.7) &&
                 ((HasEffect(Buffs.PerfectBalance) && (((JustUsed(Brotherhood, 124) && (GetBuffRemainingTime(Buffs.WindsRumination) <= 2 && GetCooldownRemainingTime(RiddleOfWind) > 17.35)) && GetBuffStacks(Buffs.PerfectBalance) <= 2) || GetBuffStacks(Buffs.PerfectBalance) <= 1)) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 1) || GetRemainingCharges(PerfectBalance) <= 0) &&

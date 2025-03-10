@@ -9,6 +9,9 @@ internal partial class MNK
 {
     internal static class Config
     {
+        internal static UserBool
+            MNK_ST_Brotherhood_AdjustROF = new("MNK_ST_Brotherhood_AdjustROF"),
+            MNK_ST_Brotherhood_ROFLastOnly = new("MNK_ST_Brotherhood_ROFLastOnly");
         public static UserInt
             MNK_ST_Brotherhood_SubOption = new("MNK_ST_Brotherhood_SubOption", 1),
             MNK_ST_RiddleOfFire_SubOption = new("MNK_ST_RiddleOfFire_SubOption", 1),
@@ -55,6 +58,8 @@ internal partial class MNK
                     break;
 
                 case CustomComboPreset.MNK_STUseBrotherhood:
+                    DrawAdditionalBoolChoice(MNK_ST_Brotherhood_ROFLastOnly, "紅蓮の極意効果中の場合、終了まで使用しない", "");
+                    DrawAdditionalBoolChoice(MNK_ST_Brotherhood_AdjustROF, "使用をずらした場合、次の紅蓮に合わせて使用", "");
                     DrawSliderInt(0, 100, MNK_ST_Brotherhood_HP,
                         $"{Brotherhood.ActionName()} を使用する対象の最低HP% (0で無効)");
 
