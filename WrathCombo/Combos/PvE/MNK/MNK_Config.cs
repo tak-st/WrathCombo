@@ -1,5 +1,6 @@
 using ImGuiNET;
 using WrathCombo.CustomComboNS.Functions;
+using WrathCombo.Data;
 using WrathCombo.Extensions;
 using static WrathCombo.Window.Functions.UserConfig;
 namespace WrathCombo.Combos.PvE;
@@ -9,9 +10,9 @@ internal partial class MNK
     internal static class Config
     {
         public static UserInt
-            MNK_ST_Brotherhood_HP = new("MNK_ST_Brotherhood_HP", 0),
-            MNK_ST_RiddleOfFire_HP = new("MNK_ST_RiddleOfFire_HP", 0),
-            MNK_ST_RiddleOfWind_HP = new("MNK_ST_RiddleOfWind_HP", 0),
+            MNK_ST_Brotherhood_SubOption = new("MNK_ST_Brotherhood_SubOption", 1),
+            MNK_ST_RiddleOfFire_SubOption = new("MNK_ST_RiddleOfFire_SubOption", 1),
+            MNK_ST_RiddleOfWind_SubOption = new("MNK_ST_RiddleOfWind_SubOption", 1),
             MNK_AoE_Brotherhood_HP = new("MNK_AoE_Brotherhood_HP", 5),
             MNK_AoE_RiddleOfWind_HP = new("MNK_AoE_RiddleOfWind_HP", 5),
             MNK_AoE_RiddleOfFire_HP = new("MNK_AoE_RiddleOfFire_HP", 0),
@@ -105,6 +106,7 @@ internal partial class MNK
                     DrawHorizontalRadioButton(MNK_SelectedOpener, "鳳真 7秒", "鳳真回し / 7秒バースト",
                         3);
 
+                    ImGui.NewLine();
                     DrawBossOnlyChoice(MNK_Balance_Content);
 
                     break;
