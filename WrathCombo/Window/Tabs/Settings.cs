@@ -23,7 +23,7 @@ namespace WrathCombo.Window.Tabs
 
                 #region UI Options
 
-                ImGui.Dummy(new Vector2(20f));
+                ImGuiEx.Spacing(new Vector2(0, 20));
                 ImGuiEx.TextUnderlined("Main UI Options");
 
                 #region SubCombos
@@ -120,7 +120,7 @@ namespace WrathCombo.Window.Tabs
 
                 #region Rotation Behavior Options
 
-                ImGui.Dummy(new Vector2(20f));
+                ImGuiEx.Spacing(new Vector2(0, 20));
                 ImGuiEx.TextUnderlined("Rotation Behavior Options");
 
 
@@ -139,6 +139,15 @@ namespace WrathCombo.Window.Tabs
                     Service.Configuration.Save();
 
                 ImGuiComponents.HelpMarker("Completely blocks spells from being used if you are moving, by replacing your actions with Savage Blade.\nThis would supersede combo-specific movement options, available for most jobs.");
+
+                #endregion
+
+                #region Action Changing
+
+                if (ImGui.Checkbox("Action Replacing", ref Service.Configuration.ActionChanging))
+                    Service.Configuration.Save();
+
+                ImGuiComponents.HelpMarker("Controls whether Actions will be Intercepted Replaced with combos from the plugin.\nIf disabled, your manual presses of abilities will no longer be affected by your Wrath settings.\n\nAuto-Rotation will work regardless of the setting.\n\nControlled by /wrath combo");
 
                 #endregion
 
@@ -250,7 +259,7 @@ namespace WrathCombo.Window.Tabs
 
                 #region Troubleshooting Options
 
-                ImGui.Dummy(new Vector2(20f));
+                ImGuiEx.Spacing(new Vector2(0, 20));
                 ImGuiEx.TextUnderlined("Troubleshooting / Analysis Options");
 
                 #region Combat Log
