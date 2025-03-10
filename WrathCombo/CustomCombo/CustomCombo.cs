@@ -1,6 +1,7 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Utility;
 using ECommons.DalamudServices;
+using ECommons.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using WrathCombo.Attributes;
 using WrathCombo.Combos;

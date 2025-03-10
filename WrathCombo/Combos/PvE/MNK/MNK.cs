@@ -1,5 +1,8 @@
+using ECommons.DalamudServices;
+using ECommons.Logging;
 using WrathCombo.Combos.PvE.Content;
 using WrathCombo.CustomComboNS;
+using WrathCombo.Extensions;
 namespace WrathCombo.Combos.PvE;
 
 internal partial class MNK
@@ -135,19 +138,19 @@ internal partial class MNK
 
         protected override uint Invoke(uint actionID)
         {
-            if (actionID is not (Bootshine or LeapingOpo or DragonKick or SteelPeak or Thunderclap))
+            if (actionID is not (Bootshine or LeapingOpo or DragonKick or TheForbiddenChakra or Thunderclap))
                 return actionID;
 
             uint originalActionId = actionID;
             bool canMelee = HasBattleTarget() && InMeleeRange();
             bool isWindBh = (HasEffect(Buffs.Brotherhood) && JustUsed(RiddleOfWind, 15 + (20 - GetBuffRemainingTime(Buffs.Brotherhood))));
             bool readyBlitz = Gauge.BlitzTimeRemaining > 0;
-            bool canBurst = originalActionId is not (DragonKick or SteelPeak);
+            bool canBurst = originalActionId is not (DragonKick or TheForbiddenChakra);
             bool isPreserveMode = originalActionId is DragonKick;
 
             double remainingSec = actionID is Thunderclap && GetTargetDistance() > 20 ? (GetTargetDistance() - 20) / 6.13 : 0;
 
-            if (actionID is Thunderclap && GetRemainingCharges(Thunderclap) > 0 && !canMelee && (!HasBattleTarget() || remainingSec < 0.75))
+            if (actionID is Thunderclap && GetRemainingCharges(OriginalHook(Thunderclap)) > 0 && !canMelee && (!HasBattleTarget() || remainingSec < 0.75))
                 return actionID;
 
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
@@ -210,15 +213,26 @@ internal partial class MNK
                 PlayerHealthPercentageHp() <= Config.MNK_VariantCure)
                 return Variant.VariantCure;
 
-            if (IsEnabled(CustomComboPreset.MNK_STUseBrotherhood) &&
-                IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat() &&
-                LevelChecked(Brotherhood) &&
-                canMelee && canBurst &&
-                (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.7) &&
-                ((HasEffect(Buffs.PerfectBalance) && (((JustUsed(Brotherhood, 124) && (GetBuffRemainingTime(Buffs.WindsRumination) <= 2 && GetCooldownRemainingTime(RiddleOfWind) > 17.35)) && GetBuffStacks(Buffs.PerfectBalance) <= 2) || GetBuffStacks(Buffs.PerfectBalance) <= 1)) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 1) || GetRemainingCharges(PerfectBalance) <= 0) &&
-                GetTargetHPPercent() >= Config.MNK_ST_Brotherhood_HP
-                )
-                return Brotherhood;
+            if (canBurst && originalActionId is not Thunderclap)
+            {
+
+                if (IsEnabled(CustomComboPreset.MNK_STUseBrotherhood) &&
+                    IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat() &&
+                    LevelChecked(Brotherhood) &&
+                    canMelee &&
+                    (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.7) &&
+                    (
+                        (
+                            HasEffect(Buffs.PerfectBalance) && (
+                                (
+                                    (JustUsed(Brotherhood, 124) && (GetBuffRemainingTime(Buffs.WindsRumination) <= 2 && GetCooldownRemainingTime(RiddleOfWind) > 17.35)) && GetBuffStacks(Buffs.PerfectBalance) <= 2) || GetBuffStacks(Buffs.PerfectBalance) <= 1
+                            )
+                        ) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 0)
+                    ) &&
+                    GetTargetHPPercent() >= Config.MNK_ST_Brotherhood_HP
+                    )
+                    return Brotherhood;
+            }
 
             if (IsEnabled(CustomComboPreset.MNK_STUseBuffs) &&
                 IsEnabled(CustomComboPreset.MNK_STUseROF) &&
@@ -312,6 +326,9 @@ internal partial class MNK
             // Perfect Balance
             if (HasEffect(Buffs.PerfectBalance) && (!HasBattleTarget() || isWindBh || InMeleeRange()))
             {
+
+                bool useTrueNorth = IsEnabled(CustomComboPreset.MNK_STUseTrueNorth) && !isPreserveMode;
+
                 uint OpoOpoAction = canMelee ?
                             Gauge.OpoOpoFury == 0 || isPreserveMode
                                 ? OriginalHook(DragonKick)
@@ -329,8 +346,6 @@ internal partial class MNK
                                 ? OriginalHook(Demolish)
                                 : OriginalHook(SnapPunch)
                             : OriginalHook(Rockbreaker);
-
-                bool useTrueNorth = IsEnabled(CustomComboPreset.MNK_STUseTrueNorth) && !isPreserveMode;
 
                 if (OpoOpoChakra >= 2) return OpoOpoAction;
                 if (RaptorChakra >= 2) return RaptorAction;
@@ -432,7 +447,7 @@ internal partial class MNK
             // Standard Beast Chakras
             return DetermineCoreAbility(actionID, IsEnabled(CustomComboPreset.MNK_STUseTrueNorth) && !isPreserveMode &&
                                         (GetRemainingCharges(TrueNorth) >= 2 ||
-                                         (GetRemainingCharges(TrueNorth) >= 1 && (SolarNadi || compareNextBurstTime(TrueNorth))) ||
+                                         (GetRemainingCharges(TrueNorth) >= 1 && (SolarNadi || BothNadisOpen || compareNextBurstTime(TrueNorth))) ||
                                          HasEffect(Buffs.RiddleOfFire) || HasEffect(Buffs.Brotherhood)));
         }
     }

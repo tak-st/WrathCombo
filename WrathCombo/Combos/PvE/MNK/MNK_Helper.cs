@@ -31,7 +31,7 @@ internal partial class MNK
 
     internal static uint DetermineCoreAbility(uint actionId, bool useTrueNorthIfEnabled)
     {
-        bool isPreserveMode = originalActionId is DragonKick;
+        bool isPreserveMode = actionId is DragonKick;
         bool canMelee = HasBattleTarget() && InMeleeRange();
         if (HasEffect(Buffs.OpoOpoForm) || HasEffect(Buffs.FormlessFist))
             return (Gauge.OpoOpoFury == 0 || isPreserveMode) && LevelChecked(OriginalHook(DragonKick))
@@ -109,14 +109,15 @@ internal partial class MNK
         return acCd < burstCd;
     }
 
-    internal static bool positionCheck(uint actionId, WeaveOnly = true)
+    internal static bool positionCheck(uint actionId, bool WeaveOnly = true)
     {
-        bool isPreserveMode = originalActionId is DragonKick;
+        bool isPreserveMode = actionId is DragonKick;
         if ((Gauge.CoeurlFury == 0 || isPreserveMode) && LevelChecked(Demolish))
         {
             if (!OnTargetsRear() &&
                 TargetNeedsPositionals() &&
-                (!WeaveOnly || (!HasEffect(Buffs.TrueNorth) &&
+                !HasEffect(Buffs.TrueNorth) &&
+                (!WeaveOnly || (
                 CanWeave() &&
                 ActionReady(TrueNorth))))
                 return false;
@@ -127,12 +128,15 @@ internal partial class MNK
         {
             if (!OnTargetsFlank() &&
                 TargetNeedsPositionals() &&
-                (!WeaveOnly || (!HasEffect(Buffs.TrueNorth) &&
+                !HasEffect(Buffs.TrueNorth) &&
+                (!WeaveOnly || (
                 CanWeave() &&
                 ActionReady(TrueNorth))))
                 return false;
             return true;
         }
+
+        return true;
     }
 
 
