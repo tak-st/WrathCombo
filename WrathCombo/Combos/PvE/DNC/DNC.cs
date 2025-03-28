@@ -407,7 +407,7 @@ internal partial class DNC : PhysRangedJob
 
             #endregion
 
-            return actionID;
+            //return actionID;
         }
     }
 

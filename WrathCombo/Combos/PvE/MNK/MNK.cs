@@ -56,11 +56,11 @@ internal partial class MNK : MeleeJob
                 if (UsePerfectBalance())
                     return PerfectBalance;
 
-                if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 25 && ActionReady(All.SecondWind))
-                    return All.SecondWind;
+                if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 25 && ActionReady(Role.SecondWind))
+                    return Role.SecondWind;
 
-                if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 40 && ActionReady(All.Bloodbath))
-                    return All.Bloodbath;
+                if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 40 && ActionReady(Role.Bloodbath))
+                    return Role.Bloodbath;
 
                 if (Gauge.Chakra >= 5 && InCombat() && LevelChecked(OriginalHook(SteeledMeditation)))
                     return OriginalHook(SteeledMeditation);
@@ -326,7 +326,7 @@ internal partial class MNK : MeleeJob
                             (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) >= GCD * 3 || !canBurst) &&
                             (Config.MNK_ST_Fast_Phoenix != 1 || !LevelChecked(RiddleOfFire) || GetBuffRemainingTime(Buffs.Brotherhood) < 12 || GetCooldownRemainingTime(RiddleOfFire) >= GCD * 3 || !canBurst) &&
                             (
-                                (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 120 - (GCD * 2)) ||
+                                (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 120 - (GCD * 2) || (Config.MNK_ST_Brotherhood_ROFLastOnly && HasEffect(Buffs.RiddleOfFire))) ||
                                 (!LevelChecked(RiddleOfFire) || GetCooldownRemainingTime(RiddleOfFire) >= 4) ||
                                 !canBurst
                             )
@@ -520,11 +520,11 @@ internal partial class MNK : MeleeJob
                     return PerfectBalance;
 
 
-                if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 25 && ActionReady(All.SecondWind))
-                    return All.SecondWind;
+                if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 25 && ActionReady(Role.SecondWind))
+                    return Role.SecondWind;
 
-                if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 40 && ActionReady(All.Bloodbath))
-                    return All.Bloodbath;
+                if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= 40 && ActionReady(Role.Bloodbath))
+                    return Role.Bloodbath;
 
                 if (Gauge.Chakra >= 5 &&
                     LevelChecked(InspiritedMeditation) &&
@@ -703,11 +703,11 @@ internal partial class MNK : MeleeJob
                 if (IsEnabled(CustomComboPreset.MNK_AoE_ComboHeals))
                 {
                     if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= Config.MNK_AoE_SecondWind_Threshold &&
-                        ActionReady(All.SecondWind))
+                        ActionReady(Role.SecondWind))
                         return Role.SecondWind;
 
                     if ((GetPartyAvgHPPercent() - PlayerHealthPercentageHp()) >= Config.MNK_AoE_Bloodbath_Threshold &&
-                        ActionReady(All.Bloodbath))
+                        ActionReady(Role.Bloodbath))
                         return Role.SecondWind;
 
                     if (LevelChecked(RiddleOfEarth) &&

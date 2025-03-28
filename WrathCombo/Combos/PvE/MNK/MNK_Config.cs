@@ -38,19 +38,19 @@ internal partial class MNK
             {
                 case CustomComboPreset.MNK_ST_ComboHeals:
                     DrawSliderInt(0, 100, MNK_ST_SecondWind_Threshold,
-                        $"PT平均から自身のHP%が乖離したら {All.SecondWind.ActionName()} を使用 (100で無効)");
+                        $"PT平均から自身のHP%が乖離したら {Role.SecondWind.ActionName()} を使用 (100で無効)");
 
                     DrawSliderInt(0, 100, MNK_ST_Bloodbath_Threshold,
-                        $"PT平均から自身のHP%が乖離したら {All.Bloodbath.ActionName()} を使用 (100で無効)");
+                        $"PT平均から自身のHP%が乖離したら {Role.Bloodbath.ActionName()} を使用 (100で無効)");
 
                     break;
 
                 case CustomComboPreset.MNK_AoE_ComboHeals:
                     DrawSliderInt(0, 100, MNK_AoE_SecondWind_Threshold,
-                        $"PT平均から自身のHP%が乖離したら {All.SecondWind.ActionName()} を使用 (100で無効)");
+                        $"PT平均から自身のHP%が乖離したら {Role.SecondWind.ActionName()} を使用 (100で無効)");
 
                     DrawSliderInt(0, 100, MNK_AoE_Bloodbath_Threshold,
-                        $"PT平均から自身のHP%が乖離したら {All.Bloodbath.ActionName()} を使用 (100で無効)");
+                        $"PT平均から自身のHP%が乖離したら {Role.Bloodbath.ActionName()} を使用 (100で無効)");
 
                     DrawSliderInt(0, 100, MNK_AoE_RiddleOfEarth_Threshold,
                         $"{RiddleOfEarth.ActionName()} を使用するPT平均の最低HP% (0で無効)");

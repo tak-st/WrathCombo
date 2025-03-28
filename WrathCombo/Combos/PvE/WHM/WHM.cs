@@ -324,7 +324,7 @@ internal partial class WHM : HealerJob
                 if (IsEnabled(CustomComboPreset.WHM_AoE_DPS_PresenceOfMind) && ActionReady(PresenceOfMind))
                     return OriginalHook(PresenceOfMind);
 
-                if (IsEnabled(CustomComboPreset.WHM_AoE_DPS_Lucid) && ActionReady(All.LucidDreaming) &&
+                if (IsEnabled(CustomComboPreset.WHM_AoE_DPS_Lucid) && ActionReady(Role.LucidDreaming) &&
                     LocalPlayer.CurrentMp <= Config.WHM_AoEDPS_Lucid)
                     return Role.LucidDreaming;
 

@@ -578,7 +578,6 @@ internal partial class MNK
         WindsReply = 36949,	
         Brotherhood = 7396,
         Mantra = 65,
-        TrueNorth = 7546,
 
         //Meditations
         InspiritedMeditation = 36941,
