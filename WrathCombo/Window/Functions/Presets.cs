@@ -96,6 +96,7 @@ namespace WrathCombo.Window.Functions
                         ($"###AutoAction{preset}", ref autoOn, preset, false))
                 {
                     DebugFile.AddLog($"Set Auto-Mode for {preset} to {autoOn}");
+                    P.IPCSearch.UpdateActiveJobPresets();
                     Service.Configuration.AutoActions[preset] = autoOn;
                     Service.Configuration.Save();
                 }
@@ -121,7 +122,7 @@ namespace WrathCombo.Window.Functions
                 {
                     PresetStorage.DisablePreset(preset);
                 }
-
+                P.IPCSearch.UpdateActiveJobPresets();
                 DebugFile.AddLog($"Set {preset} to {enabled}");
 
                 Service.Configuration.Save();

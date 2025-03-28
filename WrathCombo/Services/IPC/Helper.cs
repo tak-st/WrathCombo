@@ -104,7 +104,7 @@ public partial class Helper(ref Leasing leasing)
 
         // Get the opposite mode
         var categorizedPreset =
-            P.IPCSearch.ComboStatesByJobCategorized
+            P.IPCSearch.CurrentJobComboStatesCategorized
                 [(Job)attr.CustomComboInfo.JobID]
                 [targetType][simplicityLevelToSearchFor];
 
@@ -152,7 +152,7 @@ public partial class Helper(ref Leasing leasing)
         // Convert current job/class to a job, if it is a class
         var job = (Job)CustomComboFunctions.JobIDs.ClassToJob((uint)Player.Job);
 
-        P.IPCSearch.ComboStatesByJobCategorized.TryGetValue(job,
+        P.IPCSearch.CurrentJobComboStatesCategorized.TryGetValue(job,
             out var comboStates);
 
         if (comboStates is null || comboStates.Count == 0)
@@ -208,7 +208,7 @@ public partial class Helper(ref Leasing leasing)
         if (CombosForARCache.TryGetValue(job, out var value))
             return value;
 
-        P.IPCSearch.ComboStatesByJobCategorized.TryGetValue(job,
+        P.IPCSearch.CurrentJobComboStatesCategorized.TryGetValue(job,
             out var comboStates);
 
         if (comboStates is null)

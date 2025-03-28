@@ -31,7 +31,7 @@ internal partial class BLM : CasterJob
                     return LeyLines;
             }
 
-            if (HasEffect(Buffs.Thunderhead) && GCDsInTimer > 1 && LevelChecked(Thunder) &&
+            if (HasEffect(Buffs.Thunderhead) && LevelChecked(Thunder) &&
                 GetTargetHPPercent() >= Config.BLM_ST_ThunderHP &&
                 (ThunderDebuffST is null || ThunderDebuffST.RemainingTime < 3))
                 return OriginalHook(Thunder);
@@ -41,7 +41,7 @@ internal partial class BLM : CasterJob
                 if (ActionReady(Amplifier) && Gauge.PolyglotStacks < MaxPolyglot)
                     return Amplifier;
 
-                if (HasPolyglotStacks(Gauge))
+                if (HasPolyglotStacks())
                     return LevelChecked(Xenoglossy)
                         ? Xenoglossy
                         : Foul;
@@ -49,12 +49,11 @@ internal partial class BLM : CasterJob
 
             if (Gauge.InAstralFire)
             {
-                if (Gauge.IsParadoxActive && GCDsInTimer < 2 && CurMp >= MP.FireI)
+                if (Gauge.IsParadoxActive && CurMp >= MP.FireI)
                     return Paradox;
 
                 if (HasEffect(Buffs.Firestarter) &&
-                    (GCDsInTimer < 2 && CurMp >= MP.FireI ||
-                     Gauge.AstralFireStacks < 3))
+                    (Gauge.AstralFireStacks < 3))
                     return Fire3;
 
                 if (CurMp < MP.FireI && LevelChecked(Despair) && CurMp >= MP.Despair)
@@ -75,18 +74,18 @@ internal partial class BLM : CasterJob
                 }
 
                 if (LevelChecked(Fire4))
-                    if (GCDsInTimer > 1 && CurMp >= MP.FireI)
+                    if (CurMp >= MP.FireI)
                     {
                         if (CanSpellWeave() && ActionReady(Triplecast) &&
                             GetBuffStacks(Buffs.Triplecast) == 0 &&
                             ActionReady(Triplecast))
                             return Triplecast;
 
-                        if (HasEffect(Buffs.Thunderhead) && GCDsInTimer > 1 &&
+                        if (HasEffect(Buffs.Thunderhead) &&
                             (ThunderDebuffST is null || ThunderDebuffST.RemainingTime < 3))
                             return OriginalHook(Thunder);
 
-                        if (HasPolyglotStacks(Gauge) &&
+                        if (HasPolyglotStacks() &&
                             CanSpellWeave() && ActionReady(Triplecast) &&
                             GetBuffStacks(Buffs.Triplecast) == 0 &&
                             ActionReady(Triplecast))
@@ -96,6 +95,9 @@ internal partial class BLM : CasterJob
 
                         return Fire4;
                     }
+
+                if (HasEffect(Buffs.Firestarter) && TimeSinceFirestarterBuff >= 2)
+                    return Fire3;
 
                 if (CurMp >= MP.FireI)
                     return Fire;
@@ -115,7 +117,7 @@ internal partial class BLM : CasterJob
                         (ThunderDebuffST is null || ThunderDebuffST.RemainingTime < 3))
                         return OriginalHook(Thunder);
 
-                    if (HasPolyglotStacks(Gauge))
+                    if (HasPolyglotStacks())
                         return LevelChecked(Xenoglossy)
                             ? Xenoglossy
                             : Foul;
@@ -146,7 +148,7 @@ internal partial class BLM : CasterJob
                 if (Gauge.IsParadoxActive)
                     return Paradox;
 
-                if (HasPolyglotStacks(Gauge))
+                if (HasPolyglotStacks())
                 {
                     if (!HasEffect(Buffs.Firestarter) ||
                         !(GetBuffRemainingTime(Buffs.Firestarter) <= 3))
@@ -154,7 +156,7 @@ internal partial class BLM : CasterJob
                             ? Xenoglossy
                             : Foul;
 
-                    if (CurMp + NextMpGain <= 10000 || CurMp < 7500)
+                    if (CurMp < 10000)
                         return Blizzard;
 
                     if (ActionReady(Transpose) && CanSpellWeave() &&
@@ -169,15 +171,12 @@ internal partial class BLM : CasterJob
                         : Foul;
                 }
 
-                if (CurMp + NextMpGain >= 7500 &&
-                    (LocalPlayer?.CastActionId == Blizzard ||
-                     WasLastSpell(Blizzard) ||
-                     WasLastSpell(Blizzard4)))
+                if (CurMp >= 7500)
                     return LevelChecked(Fire3)
                         ? Fire3
                         : Fire;
 
-                if (CurMp + NextMpGain <= 10000 || CurMp < 7500)
+                if (CurMp < 10000)
                     return Blizzard;
 
                 if (ActionReady(Transpose) && CanSpellWeave() &&
@@ -231,7 +230,7 @@ internal partial class BLM : CasterJob
             }
 
             if (IsEnabled(CustomComboPreset.BLM_ST_Thunder) &&
-                HasEffect(Buffs.Thunderhead) && GCDsInTimer > 1 && LevelChecked(Thunder) &&
+                HasEffect(Buffs.Thunderhead) && LevelChecked(Thunder) &&
                 GetTargetHPPercent() >= Config.BLM_ST_ThunderHP &&
                 (ThunderDebuffST is null || ThunderDebuffST.RemainingTime < 3))
                 return OriginalHook(Thunder);
@@ -251,12 +250,11 @@ internal partial class BLM : CasterJob
 
             if (Gauge.InAstralFire)
             {
-                if (Gauge.IsParadoxActive && GCDsInTimer < 2 && CurMp >= MP.FireI)
+                if (Gauge.IsParadoxActive && CurMp >= MP.FireI)
                     return Paradox;
 
                 if (HasEffect(Buffs.Firestarter) &&
-                    (GCDsInTimer < 2 && CurMp >= MP.FireI ||
-                     Gauge.AstralFireStacks < 3))
+                    (Gauge.AstralFireStacks < 3))
                     return Fire3;
 
                 if (IsEnabled(CustomComboPreset.BLM_ST_Despair) &&
@@ -282,7 +280,7 @@ internal partial class BLM : CasterJob
                 }
 
                 if (LevelChecked(Fire4))
-                    if (GCDsInTimer > 1 && CurMp >= MP.FireI)
+                    if (CurMp >= MP.FireI)
                     {
                         if (IsEnabled(CustomComboPreset.BLM_ST_Triplecast) &&
                             CanSpellWeave() && ActionReady(Triplecast) &&
@@ -292,7 +290,7 @@ internal partial class BLM : CasterJob
                             return Triplecast;
 
                         if (IsEnabled(CustomComboPreset.BLM_ST_Thunder) &&
-                            HasEffect(Buffs.Thunderhead) && GCDsInTimer > 1 &&
+                            HasEffect(Buffs.Thunderhead) &&
                             (ThunderDebuffST is null || ThunderDebuffST.RemainingTime < 3))
                             return OriginalHook(Thunder);
 
@@ -310,14 +308,15 @@ internal partial class BLM : CasterJob
                         return Fire4;
                     }
 
+                if (HasEffect(Buffs.Firestarter))
+                    return Fire3;
+
                 if (CurMp >= MP.FireI)
                     return Fire;
 
                 if (IsEnabled(CustomComboPreset.BLM_ST_Manafont) &&
                     ActionReady(Manafont))
-                    return HasEffect(Buffs.Firestarter)
-                        ? Fire3
-                        : Manafont;
+                    return Manafont;
 
                 if (ActionReady(Blizzard3) &&
                     (IsEnabled(CustomComboPreset.BLM_ST_Swiftcast) && ActionReady(Role.Swiftcast) ||
@@ -377,7 +376,7 @@ internal partial class BLM : CasterJob
                             ? Xenoglossy
                             : Foul;
 
-                    if (CurMp + NextMpGain <= 10000 || CurMp < 7500)
+                    if (CurMp < 10000)
                         return Blizzard;
 
                     if (IsEnabled(CustomComboPreset.BLM_ST_Transpose) &&
@@ -393,15 +392,12 @@ internal partial class BLM : CasterJob
                         : Foul;
                 }
 
-                if (CurMp + NextMpGain >= 7500 &&
-                    (LocalPlayer?.CastActionId == Blizzard ||
-                     WasLastSpell(Blizzard) ||
-                     WasLastSpell(Blizzard4)))
+                if (CurMp >= 7500)
                     return LevelChecked(Fire3)
                         ? Fire3
                         : Fire;
 
-                if (CurMp + NextMpGain <= 10000 || CurMp < 7500)
+                if (CurMp < 10000)
                     return Blizzard;
 
                 if (IsEnabled(CustomComboPreset.BLM_ST_Transpose) &&
@@ -438,7 +434,7 @@ internal partial class BLM : CasterJob
             if (WasLastSpell(UmbralSoul))
                 return OriginalHook(Fire2);
 
-            if (HasEffect(Buffs.Thunderhead) && GCDsInTimer > 1 && Thunder2.LevelChecked() &&
+            if (HasEffect(Buffs.Thunderhead) && Thunder2.LevelChecked() &&
                 (ThunderDebuffAoE is null || ThunderDebuffAoE.RemainingTime < 3))
                 return OriginalHook(Thunder2);
 
@@ -450,7 +446,7 @@ internal partial class BLM : CasterJob
                 if (ActionReady(Amplifier) && Gauge.PolyglotStacks < MaxPolyglot)
                     return Amplifier;
 
-                if (HasPolyglotStacks(Gauge))
+                if (HasPolyglotStacks())
                     return Foul;
             }
 
@@ -482,7 +478,7 @@ internal partial class BLM : CasterJob
                     }
 
                     if (Fire2.LevelChecked())
-                        if (GCDsInTimer > 1 && CurMp >= MP.FireAoE)
+                        if (CurMp >= MP.FireAoE)
                             return OriginalHook(Fire2);
 
                     if (ActionReady(Manafont))
@@ -498,7 +494,7 @@ internal partial class BLM : CasterJob
 
             if (Gauge.InUmbralIce)
             {
-                if (HasPolyglotStacks(Gauge))
+                if (HasPolyglotStacks())
                     return Foul;
 
                 if (ActionWatching.WhichOfTheseActionsWasLast(OriginalHook(Fire2), OriginalHook(Freeze),
@@ -577,7 +573,7 @@ internal partial class BLM : CasterJob
                 return OriginalHook(Fire2);
 
             if (IsEnabled(CustomComboPreset.BLM_AoE_Thunder) &&
-                HasEffect(Buffs.Thunderhead) && GCDsInTimer > 1 && LevelChecked(Thunder2) &&
+                HasEffect(Buffs.Thunderhead) && LevelChecked(Thunder2) &&
                 GetTargetHPPercent() >= Config.BLM_AoE_ThunderHP &&
                 (ThunderDebuffAoE is null || ThunderDebuffAoE.RemainingTime < 3))
                 return OriginalHook(Thunder2);
@@ -626,7 +622,7 @@ internal partial class BLM : CasterJob
                 }
 
                 if (Fire2.LevelChecked())
-                    if (GCDsInTimer > 1 && CurMp >= MP.FireAoE)
+                    if (CurMp >= MP.FireAoE)
                         return OriginalHook(Fire2);
 
                 if (IsEnabled(CustomComboPreset.BLM_AoE_Manafont) &&
@@ -721,7 +717,7 @@ internal partial class BLM : CasterJob
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BLM_Scathe_Xeno;
 
         protected override uint Invoke(uint actionID) =>
-            actionID is Scathe && LevelChecked(Xenoglossy) && HasPolyglotStacks(Gauge)
+            actionID is Scathe && LevelChecked(Xenoglossy) && HasPolyglotStacks()
                 ? Xenoglossy
                 : actionID;
     }

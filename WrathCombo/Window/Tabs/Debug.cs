@@ -82,7 +82,7 @@ namespace WrathCombo.Window.Tabs
                         DebugConfig = true;
                         _previousConfig = Service.Configuration;
                         Service.Configuration = config;
-                        P.IPC = Provider.InitAsync().Result;
+                        P.IPC = Provider.Init();
                         AutoRotationController.cfg = null;
                         UpdateCaches(true, true, false);
                         _debugError = "";
@@ -174,6 +174,7 @@ namespace WrathCombo.Window.Tabs
                     $"{LocalPlayer.ClassJob.Value.NameEnglish} (ID: {LocalPlayer.ClassJob.RowId})");
                 CustomStyleText("Zone:",
                     $"{Svc.Data.GetExcelSheet<TerritoryType>().FirstOrDefault(x => x.RowId == Svc.ClientState.TerritoryType).PlaceName.Value.Name} (ID: {Svc.ClientState.TerritoryType})");
+                CustomStyleText($"MP:", GetPartyMembers().First().CurrentMP);
                 CustomStyleText("In PvP:", InPvP());
                 CustomStyleText("In Combat:", InCombat());
                 CustomStyleText("In Boss:", InBossEncounter());
@@ -320,6 +321,7 @@ namespace WrathCombo.Window.Tabs
                 CustomStyleText("Is BattleChara:", target is IBattleChara);
                 CustomStyleText("Is PlayerCharacter:", target is IPlayerCharacter);
                 CustomStyleText("Distance:", $"{Math.Round(GetTargetDistance(), 2)}y");
+                CustomStyleText("Height:", $"{Math.Round(GetTargetHeightDifference(), 2)}y");
                 CustomStyleText("Hitbox Radius:", target?.HitboxRadius);
                 CustomStyleText("In Melee Range:", InMeleeRange());
                 CustomStyleText("Requires Postionals:", TargetNeedsPositionals());
@@ -771,7 +773,7 @@ namespace WrathCombo.Window.Tabs
                 new PluginConfiguration();
             _previousConfig = null;
 
-            P.IPC = Provider.InitAsync().Result;
+            P.IPC = Provider.Init();
             AutoRotationController.cfg = null;
             UpdateCaches(true, true, false);
         }

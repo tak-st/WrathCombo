@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WrathCombo.Combos;
+using ECommons.DalamudServices;
 
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable UnusedMember.Global
@@ -68,7 +69,7 @@ public partial class Provider : IDisposable
     /// </summary>
     /// <returns><see cref="Provider" /></returns>
     /// <seealso cref="Provider()"/>
-    public static async Task<Provider> InitAsync()
+    public static Provider Init()
     {
         Provider output = new();
 
@@ -76,11 +77,6 @@ public partial class Provider : IDisposable
         EzIPC.Init(output, prefix: "WrathCombo");
         P.IPCSearch = new Search(output.Leasing);
         P.UIHelper = new UIHelper(output.Leasing);
-
-        // Build Caches of presets
-        await Task.Run(() => P.IPCSearch.ComboStatesByJobCategorized.TryGetValue(Player.Job, out var _));
-        await Task.Run(() => P.UIHelper.PresetControlled(CustomComboPreset.AST_ST_DPS));
-        output._ipcReady = true;
 
         return output;
     }

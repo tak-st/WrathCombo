@@ -21,20 +21,15 @@ internal partial class BLM
             { HighThunder, Debuffs.HighThunder },
             { HighThunder2, Debuffs.HighThunder2 }
         };
-    
+
     internal static BLMGauge Gauge = GetJobGauge<BLMGauge>();
     internal static BLMOpenerMaxLevel1 Opener1 = new();
 
-    internal static uint CurMp => LocalPlayer.CurrentMp;
+    internal static uint CurMp => GetPartyMembers().First().CurrentMP;
 
     internal static int MaxPolyglot =>
         TraitLevelChecked(Traits.EnhancedPolyglotII) ? 3 :
         TraitLevelChecked(Traits.EnhancedPolyglot) ? 2 : 1;
-
-    internal static float ElementTimer => Gauge.ElementTimeRemaining / 1000f;
-
-    internal static double GCDsInTimer =>
-        Math.Floor(ElementTimer / GetActionCastTime(Gauge.InAstralFire ? Fire : Blizzard));
 
     internal static int RemainingPolyglotCD =>
         Math.Max(0, (MaxPolyglot - Gauge.PolyglotStacks) * 30000 + (Gauge.EnochianTimer - 30000));
@@ -49,8 +44,10 @@ internal partial class BLM
         TraitLevelChecked(Traits.AspectMasteryIII) &&
         IsOffCooldown(Role.Swiftcast);
 
-    internal static bool HasPolyglotStacks(BLMGauge gauge) => gauge.PolyglotStacks > 0;
+    internal static bool HasPolyglotStacks() => Gauge.PolyglotStacks > 0;
 
+    internal static float TimeSinceFirestarterBuff => HasEffect(Buffs.Firestarter) ? GetPartyMembers().First().TimeSinceBuffApplied(Buffs.Firestarter) : 0;
+    
     internal static WrathOpener Opener()
     {
         if (Opener1.LevelChecked)
@@ -134,19 +131,20 @@ internal partial class BLM
             LeyLines,
             Fire4,
             Fire4,
-            Despair,
+            Fire4,
             Manafont,
             Fire4,
             Triplecast,
-            Fire4,
             FlareStar,
             Fire4,
+            Fire4,
             HighThunder,
-            Paradox,
             Fire4,
             Fire4,
             Fire4,
-            Despair
+            Fire4,
+            Despair,
+            FlareStar
         ];
         internal override UserData ContentCheckConfig => Config.BLM_ST_Balance_Content;
 
@@ -165,9 +163,6 @@ internal partial class BLM
                 return false;
 
             if (!IsOffCooldown(Amplifier))
-                return false;
-
-            if (Gauge.InUmbralIce)
                 return false;
 
             return true;
@@ -214,17 +209,6 @@ internal partial class BLM
         FlareStar = 36989;
 
     // Debuff Pairs of Actions and Debuff
-
-
-    private static int NextMpGain => Gauge.UmbralIceStacks switch
-    {
-        0 => 0,
-        1 => 2500,
-        2 => 5000,
-        3 => 10000,
-        var _ => 0
-    };
-
     public static class Buffs
     {
         public const ushort
