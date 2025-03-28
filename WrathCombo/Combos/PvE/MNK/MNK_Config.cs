@@ -13,9 +13,9 @@ internal partial class MNK
             MNK_ST_Brotherhood_AdjustROF = new("MNK_ST_Brotherhood_AdjustROF"),
             MNK_ST_Brotherhood_ROFLastOnly = new("MNK_ST_Brotherhood_ROFLastOnly");
         public static UserInt
-            MNK_ST_Brotherhood_SubOption = new("MNK_ST_Brotherhood_SubOption", 1),
-            MNK_ST_RiddleOfFire_SubOption = new("MNK_ST_RiddleOfFire_SubOption", 1),
-            MNK_ST_RiddleOfWind_SubOption = new("MNK_ST_RiddleOfWind_SubOption", 1),
+            MNK_ST_Brotherhood_HP = new("MNK_ST_Brotherhood_HP", 1),
+            MNK_ST_RiddleOfFire_HP = new("MNK_ST_RiddleOfFire_HP", 1),
+            MNK_ST_RiddleOfWind_HP = new("MNK_ST_RiddleOfWind_HP", 1),
             MNK_AoE_Brotherhood_HP = new("MNK_AoE_Brotherhood_HP", 5),
             MNK_AoE_RiddleOfWind_HP = new("MNK_AoE_RiddleOfWind_HP", 5),
             MNK_AoE_RiddleOfFire_HP = new("MNK_AoE_RiddleOfFire_HP", 0),

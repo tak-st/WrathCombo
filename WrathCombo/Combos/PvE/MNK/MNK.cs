@@ -237,7 +237,7 @@ internal partial class MNK
                     IsEnabled(CustomComboPreset.MNK_STUseBuffs) && InCombat() &&
                     LevelChecked(Brotherhood) &&
                     (!Config.MNK_ST_Brotherhood_ROFLastOnly || !HasEffect(Buffs.RiddleOfFire)) &&
-                    (!MNK_ST_Brotherhood_AdjustROF || JustUsed(Brotherhood, 124) || GetCooldownRemainingTime(RiddleOfFire) <= 0.7) &&
+                    (!Config.MNK_ST_Brotherhood_AdjustROF || JustUsed(Brotherhood, 124) || GetCooldownRemainingTime(RiddleOfFire) <= 0.7) &&
                     canMelee &&
                     (IsOffCooldown(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 0.7) &&
                     (
