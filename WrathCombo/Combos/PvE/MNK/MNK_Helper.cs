@@ -89,9 +89,9 @@ internal partial class MNK
         return ac1Cd < ac2Cd;
     }
 
-    internal static bool compareNextBurstTime(uint action, float needTime = 0)
+    internal static bool compareNextBurstTime(uint action = 0, float needTime = 0)
     {
-        var acCd = GetCooldownRemainingTime(action) + needTime;
+        var acCd = (action != 0 ? GetCooldownRemainingTime(action) : 0) + needTime;
         var burstCd = GetCooldownRemainingTime(RiddleOfFire);
         if (!LevelChecked(Brotherhood)) return acCd < burstCd;
         if (!LevelChecked(RiddleOfFire)) return true;
@@ -575,7 +575,7 @@ internal partial class MNK
         RiddleOfFire = 7395,
         FiresReply = 36950,
         RiddleOfWind = 25766,
-        WindsReply = 36949,	
+        WindsReply = 36949,
         Brotherhood = 7396,
         Mantra = 65,
 

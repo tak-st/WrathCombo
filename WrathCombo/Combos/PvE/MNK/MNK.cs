@@ -371,7 +371,7 @@ internal partial class MNK : MeleeJob
                 if ((SolarNadi && !LunarNadi) || BothNadisOpen ||
                     (
                         (!LunarNadi || (Config.MNK_ST_Many_PerfectBalance == 0 && JustUsed(ElixirBurst, 20))) &&
-                        (GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood))
+                        ((GetCooldownRemainingTime(Brotherhood) <= 20 && !compareNextBurstTime(0, 20)) || HasEffect(Buffs.Brotherhood))
                     ))
                     return OpoOpoAction;
 
@@ -763,7 +763,7 @@ internal partial class MNK : MeleeJob
                 if ((SolarNadi && !LunarNadi) || BothNadisOpen ||
                     (
                         (!LunarNadi || JustUsed(ElixirBurst, 20)) &&
-                        GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood)
+                        ((GetCooldownRemainingTime(Brotherhood) <= 20 && !compareNextBurstTime(0, 20)) || HasEffect(Buffs.Brotherhood))
                     )
                 )
                     return maxPowerSkill;
