@@ -1,5 +1,6 @@
 ﻿using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
+using ECommons.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using WrathCombo.CustomComboNS;
@@ -97,7 +98,11 @@ internal partial class MNK
         if (!LevelChecked(RiddleOfFire)) return true;
         var bhCd = GetCooldownRemainingTime(Brotherhood);
         var diff = bhCd - burstCd;
-        if (diff <= 0 || !(diff >= 54 && diff <= 66))
+        if (Config.MNK_ST_Brotherhood_AdjustROF && bhCd < burstCd && diff <= -10)
+        {
+
+        }
+        else if (diff <= 0 || !(diff >= 54 && diff <= 66))
         {
             burstCd = bhCd;
         }
@@ -105,6 +110,7 @@ internal partial class MNK
         {
             burstCd = (bhCd - 54);
         }
+        //DuoLog.Information($"burst: {acCd:0.0} < {burstCd:0.0}");
 
         return acCd < burstCd;
     }
@@ -146,7 +152,7 @@ internal partial class MNK
         {
             // Odd window
             if ((JustUsed(OriginalHook(Bootshine), GCD) || JustUsed(OriginalHook(DragonKick), GCD)) &&
-                compareCooldownTime(PerfectBalance, Brotherhood, 30) &&
+                (compareCooldownTime(PerfectBalance, Brotherhood, 30) || compareNextBurstTime(PerfectBalance, 30)) &&
                 (
                     (HasEffect(Buffs.RiddleOfFire) && GetBuffRemainingTime(Buffs.RiddleOfFire) > GCD * 4 + RemainingGCD) || (
                         (Config.MNK_ST_Fast_Phoenix == 1 &&
@@ -157,7 +163,7 @@ internal partial class MNK
                             )
                         )
                     )
-                ) && !HasEffect(Buffs.Brotherhood) &&
+                ) && !HasEffect(Buffs.Brotherhood) /*&&
                 (
                     Config.MNK_ST_Many_PerfectBalance == 1 ||
                     !BothNadisOpen ||
@@ -167,7 +173,7 @@ internal partial class MNK
                         GetCooldownRemainingTime(RiddleOfFire) > 12 &&
                         GetCooldownRemainingTime(RiddleOfFire) < 20
                     )
-                )
+                )*/
             )
                 return true;
 
@@ -179,8 +185,9 @@ internal partial class MNK
                     GetBuffRemainingTime(Buffs.WindsRumination) >= (GCD * 3 + RemainingGCD) ||
                     GetCooldownRemainingTime(RiddleOfWind) < (17.35 + GCD * 2 + RemainingGCD)
                 ) &&
+                (!Config.MNK_ST_Brotherhood_ROFLastOnly || !HasEffect(Buffs.RiddleOfFire) || HasEffect(Buffs.Brotherhood)) &&
                 (
-                    GetCooldownRemainingTime(Brotherhood) < (GCD * 2 + RemainingGCD) ||
+                    (GetCooldownRemainingTime(Brotherhood) < (GCD * 2 + RemainingGCD) && (!Config.MNK_ST_Brotherhood_AdjustROF || JustUsed(Brotherhood, 124) || GetCooldownRemainingTime(RiddleOfFire) < (GCD * 4))) ||
                     HasEffect(Buffs.Brotherhood)
                 )
             )
@@ -402,7 +409,7 @@ internal partial class MNK
             if (!IsOffCooldown(RiddleOfWind))
                 return false;
 
-            if (Gauge.Nadi != Nadi.NONE)
+            if (Gauge.Nadi != Nadi.None)
                 return false;
 
             if (Gauge.RaptorFury != 0)
@@ -518,7 +525,7 @@ internal partial class MNK
             if (!IsOffCooldown(RiddleOfWind))
                 return false;
 
-            if (Gauge.Nadi != Nadi.NONE)
+            if (Gauge.Nadi != Nadi.None)
                 return false;
 
             if (Gauge.RaptorFury != 0)

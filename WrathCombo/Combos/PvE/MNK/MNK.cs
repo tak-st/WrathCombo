@@ -241,7 +241,7 @@ internal partial class MNK : MeleeJob
                                 (
                                     (JustUsed(Brotherhood, 124) && (GetBuffRemainingTime(Buffs.WindsRumination) <= 2 && GetCooldownRemainingTime(RiddleOfWind) > 17.35)) && GetBuffStacks(Buffs.PerfectBalance) <= 2) || GetBuffStacks(Buffs.PerfectBalance) <= 1
                             )
-                        ) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 0)
+                        ) || (!HasEffect(Buffs.PerfectBalance) && GetRemainingCharges(PerfectBalance) <= 0) || (Gauge.BlitzTimeRemaining >= 2000)
                     ) &&
                     GetTargetHPPercent() >= Config.MNK_ST_Brotherhood_HP
                     )
@@ -320,10 +320,10 @@ internal partial class MNK : MeleeJob
                     !HasEffect(Buffs.PerfectBalance) &&
                     !IsOriginal(MasterfulBlitz) &&
                     (
-                        (!BothNadisOpen && Gauge.BlitzTimeRemaining <= 4000) ||
+                        ((!BothNadisOpen || canMelee) && Gauge.BlitzTimeRemaining <= 4000) ||
                         (
                             canMelee &&
-                            (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) >= GCD * 3 || !canBurst) &&
+                            (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) >= GCD * 3 || !canBurst || (Config.MNK_ST_Brotherhood_ROFLastOnly && HasEffect(Buffs.RiddleOfFire))) &&
                             (Config.MNK_ST_Fast_Phoenix != 1 || !LevelChecked(RiddleOfFire) || GetBuffRemainingTime(Buffs.Brotherhood) < 12 || GetCooldownRemainingTime(RiddleOfFire) >= GCD * 3 || !canBurst) &&
                             (
                                 (!LevelChecked(Brotherhood) || GetCooldownRemainingTime(Brotherhood) <= 120 - (GCD * 2) || (Config.MNK_ST_Brotherhood_ROFLastOnly && HasEffect(Buffs.RiddleOfFire))) ||
@@ -370,7 +370,7 @@ internal partial class MNK : MeleeJob
                 #region Open Lunar
                 if ((SolarNadi && !LunarNadi) || BothNadisOpen ||
                     (
-                        (!LunarNadi || (Config.MNK_ST_Many_PerfectBalance == 0 && JustUsed(ElixirBurst, 20))) &&
+                        (!LunarNadi || (Config.MNK_ST_Many_PerfectBalance == 0 && (JustUsed(ElixirField, 20) || JustUsed(ElixirBurst, 20)))) &&
                         (GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood))
                     ))
                     return OpoOpoAction;
@@ -762,7 +762,7 @@ internal partial class MNK : MeleeJob
 
                 if ((SolarNadi && !LunarNadi) || BothNadisOpen ||
                     (
-                        (!LunarNadi || JustUsed(ElixirBurst, 20)) &&
+                        (!LunarNadi || (JustUsed(ElixirField, 20) || JustUsed(ElixirBurst, 20))) &&
                         GetCooldownRemainingTime(Brotherhood) <= 20 || HasEffect(Buffs.Brotherhood)
                     )
                 )
