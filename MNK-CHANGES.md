@@ -450,6 +450,67 @@ FFXIV はホットバーの**スロットに置かれた元アクション**を�
 | B30 | **トゥルーノースの使用条件を厳格化** — チャージ2以上、または1以上かつ（Solar/両開き/次バーストに間に合う）、または紅蓮/桃園中 | `MNK_ManualTN`（手動チャージ数指定） | 🔴 要移植 |
 | B31 | 開幕ブロックで `TheForbiddenChakra` → `OriginalHook(...)`、`return actionID` → `return OriginalHook(actionID)` | 上流は素の `actionID` を返す（2ボタンなのでゲーム側の自動アップグレードが効く） | 🔴 要移植（**B1 とセット**） |
 
+### B-4-3. `Phoenix_Order` の対応表と、実際に使っていた設定（B28）
+
+UIラベルの `1` `2` `3` は第1〜第3の型。`else` 節（既定値 `0`）が
+`Opo → Raptor → Coeurl` を返すことから確定できる。
+
+| 番号 | 型 | アクション |
+| --- | --- | --- |
+| 1 | Opo-Opo | `OpoOpoAction` |
+| 2 | Raptor | `RaptorAction` |
+| 3 | Coeurl | `CoeurlAction` |
+
+| 設定値 | ラベル | 実際の順序 |
+| --- | --- | --- |
+| 0（既定） | 1→2→3 | Opo → Raptor → Coeurl |
+| 1 | 2→3→1 | Raptor → Coeurl → Opo |
+| **2** | 3→2→1 | **Coeurl → Raptor → Opo** ← 上流の固定順と一致 |
+| 3 | 直前の型依存 | Raptor型GCDの直後なら Coeurl を先に。それ以外は Raptor → Coeurl → Opo |
+| **4** | 現在方向依存 | **方向指定が取れていれば Coeurl を先に**。それ以外は Raptor → Opo → Coeurl |
+
+#### 上流は「3→2→1」固定
+
+```csharp
+if (Gauge.BeastChakra[0] is BeastChakra.None) { actionID = CoeurlFormGCD(); return true; }
+if (Gauge.BeastChakra[1] is BeastChakra.None) { actionID = RaptorFormGCD(); return true; }
+if (Gauge.BeastChakra[2] is BeastChakra.None) { actionID = OpoFormGCD();    return true; }
+```
+
+**フォークの既定値（0）とは完全に逆順。**
+
+#### 実際に使っていたのは設定値 4（2026-08-19、作者本人）
+
+```csharp
+if (CoeurlChakra == 0 && positionCheck(actionID, false))
+    return CoeurlAction;                      // 今その場で方向指定が取れる → Coeurl を消化
+else
+{
+    if (RaptorChakra == 0) return RaptorAction;
+    if (OpoOpoChakra == 0) return OpoOpoAction;
+    if (CoeurlChakra == 0) return CoeurlAction;   // 取れないなら Coeurl を最後へ回す
+}
+```
+
+`positionCheck(actionID, false)` は `WeaveOnly = false` なので
+「トゥルーノースを待てるか」を外し、**今この瞬間に方向指定が成立するか**だけを見る。
+`Gauge.CoeurlFury` で破砕拳（背面）と崩拳（側面）を撃ち分けるところまで見ている。
+
+> **狙い: 立ち位置が合っているうちに方向指定技を消化し、合っていなければ最後に回して
+> 位置を直す時間を稼ぐ。**
+
+#### 移植への影響
+
+**上流の固定順（Coeurl 先頭）は、設定値 4 とは真逆の最悪ケース。**
+立ち位置に関係なく、踏鳴の1発目で必ず方向指定技を要求される。
+
+| 依存 | 状態 |
+| --- | --- |
+| `positionCheck()`（F6） | 🔴 要移植。設定値 4 はこれ無しでは成立しない |
+| B24（`CoeurlAction` の変数化） | 🔴 要移植。撃ち分けの受け皿 |
+
+**B28 は選択肢 4 を含めて全面的に移植が必要。** 順序を差し替えるだけでは足りない。
+
 ### B-4-2. チャクラ数分岐は「安全網」だった（B25）
 
 当初「方式が違うだけで同等」と判定したが**誤り**。上流のほうが脆い。
