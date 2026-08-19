@@ -70,15 +70,13 @@
 
 さらに `B8` `B9` も、`isWindBh` の意味が判明したことで**明確な改善**と確認できたため要移植とした（下記 B-3-2）。
 
-**🟡 のまま残した4件**は性質が違う。
+**🟡 のまま残した2件**は性質が違う。
 「その方が良いという判断」ではなく、**土台のコード構造への適応**だった可能性があるもの:
 
 | # | 残した理由 |
 | --- | --- |
 | `D3` | AoE の条件簡素化。上流の再構築で意味が変わる可能性 |
 | `D11` | 上流 `DoPerfectBalanceCombo(onAoE: true)` に集約済み。同等かの確認が要る |
-| `H2` | プリセット親子関係。挙動ではなくUI構造で、上流の現在の木を見てから |
-| `H3` | 同上 |
 
 **要するに「挙動をこうしたい」という判断は尊重し、「当時のコードでこう書くしかなかった」箇所だけ保留した。**
 
@@ -607,15 +605,15 @@ Lunar/Solar の計画ロジック**より前**に置かれており、
 | --- | --- | --- | --- |
 | F1 | `Nadi` / `BeastChakra` の enum リネーム追従（`LUNAR`→`Lunar` 等） | 上流の現行名 | ⚪ 不要（API追従） |
 | F2 | `DetermineCoreAbility` に `isPreserveMode` / `canMelee` を導入、非近接時のフォールバック追加 | `DoBasicCombo()` | 🔴 要移植（B2と一体） |
-| F3 | `DetermineCoreAbility` のトゥルーノースに `CanWeave()` 条件追加 | あり | ⚪ 不要 |
+| F3 | `DetermineCoreAbility` のトゥルーノースに **`CanWeave()` 条件追加** | 上流 `DoBasicCombo()` に**ウィーブ判定が無い**（代わりに `trueNorthCharges` でチャージ温存指定） | 🔴 要移植 |
 | F4 | **`compareCooldownTime(a1, a2, needTime)` 新設** — 2アクションのリキャストを猶予込みで比較 | 該当なし | 🔴 要移植 |
 | F5 | **`compareNextBurstTime(action, needTime)` 新設** — 次のバースト窓に間に合うか。桃園と紅蓮のズレ（54〜66秒）で基準を切り替え、`AdjustROF` 連動 | `IsEvenWindowApproaching()` 等が別解 | 🔴 要移植（中核） |
 | F6 | **`positionCheck(actionId, weaveOnly)` 新設** — 方向指定の可否判定を関数化 | 同等の判定は各所に分散 | 🔴 要移植（B28で使用） |
 | F7 | **`UsePerfectBalance()` を全面書き換え** — 奇数窓/偶数窓/低レベル/追加/ターゲット無し の5分岐。`Fast_Phoenix`・`Many_PerfectBalance`・`ROFLastOnly`・`AdjustROF`・`FiresReply_Order` 連動 | `CanPerfectBalance()` + `ShouldUsePreRoFPerfectBalance()` / `ShouldUseSecondPerfectBalance()` 等に分解済み。**上流も同等以上に細かいが、思想が違う**（下記 F-2） | 🔴 要移植 |
-| F8 | **`UsePerfectBalanceAoE(maxPowerSkill)` 新設** | `CanPerfectBalanceMaxChargeAoE()` | ⚪ 不要 |
+| F8 | **`UsePerfectBalanceAoE(maxPowerSkill)` 新設** — ST版と同じ5分岐（桃園CD同期・`compareNextBurstTime`・ダウンタイム） | `CanPerfectBalanceMaxChargeAoE()` は**チャージ最大かつ紅蓮窓外**を見るだけ。桃園との同期は無い | 🔴 要移植 |
 | F9 | **`Opener()` に自動選択を追加** — `MNK_SelectedOpener == 4` でPT内の踊り子を検出し `LL7`/`LL` を切替 | 3種の固定選択（DoubleLunar / SolarLunar / BrotherhoodFirst）。PT構成の検出は無し | 🔴 要移植 |
 | F10 | **`MNKOpenerLogicSL7` / `MNKOpenerLogicLL7` を新設**（各20ステップの7秒バースト版） | レベル別5種（`Lvl90LL`/`Lvl100LL`/`Lvl90SL`/`Lvl100SL`/`Lvl100BHFirst`）。7秒版は無し | 🔴 要移植 |
-| F11 | Buffs に `EarthsResolve = 1180` / `EarthsRumination = 3841` を追加 | 定義済み | ⚪ 不要 |
+| F11 | Buffs に `EarthsResolve = 1180` / `EarthsRumination = 3841` を追加 | `EarthsRumination` は上流にもあり。`EarthsResolve` は**上流に無いがフォークでも未使用**（定義のみ） | ⚪ 不要 |
 
 ---
 
@@ -717,10 +715,10 @@ GetCooldownRemainingTime(RiddleOfWind) < (17.35 + GCD * 2 + RemainingGCD)  // �
 
 | # | 変更 | 上流最新 | 判断 |
 | --- | --- | --- | --- |
-| H1 | `MNK_ST_AdvancedMode` の `ReplaceSkill` に `DragonKick` / `Thunderclap` を追加 | `Bootshine` / `LeapingOpo` のみ | 🔴 要移植（B1と一体） |
-| H2 | `MNK_STUseFiresReply` の親を `MNK_STUseBuffs` → **`MNK_STUseROF`** | 上流の親子関係を要確認 | 🟡 実測後 |
-| H3 | `MNK_STUseWindsReply` の親を `MNK_STUseBuffs` → **`MNK_STUseROW`** | 同上 | 🟡 実測後 |
-| H4 | `MNK_PerfectBalance` から `ConflictingCombos(MNK_PerfectBalanceProtection)` を削除 | 上流に `MNK_PerfectBalanceProtection` が存在 | ⚪ 不要 |
+| H1 | `MNK_ST_AdvancedMode` の `ReplaceSkill` に `DragonKick` / `Thunderclap` を追加 | `Bootshine` / `LeapingOpo` のみ | ⚪ **不要**（B-1-3 で Custom Action 方式を採用したため消滅） |
+| H2 | `MNK_STUseFiresReply` の親を `MNK_STUseBuffs` → **`MNK_STUseROF`** | 上流は**土台と同じ** `MNK_ST_AdvancedMode` 直下。紅蓮をOFFにしても乾坤が飛ぶ | 🔴 要移植 |
+| H3 | `MNK_STUseWindsReply` の親を `MNK_STUseBuffs` → **`MNK_STUseROW`** | 同上。疾風をOFFにしても絶空拳が飛ぶ | 🔴 要移植 |
+| H4 | `MNK_PerfectBalance` から `ConflictingCombos(MNK_PerfectBalanceProtection)` を削除 | 上流は**両方向**に宣言。強制は一方向なので、片方削除は**操作順で結果が変わる不安定な状態**を作る | ⚪ **不要**（消し忘れと判断） |
 | H5 | MNK 全プリセットの名称・説明を日本語化 | 公式ローカライズ | ⚪ 不要 |
 
 ---
@@ -743,9 +741,9 @@ GetCooldownRemainingTime(RiddleOfWind) < (17.35 + GCD * 2 + RemainingGCD)  // �
 
 | 判断 | 件数 | 主な内容 |
 | --- | --- | --- |
-| 🔴 **要移植** | **54件** | 多ボタン設計（B1〜B4）、`compareNextBurstTime`（F5）、**桃園と踏鳴の連動（B14）**、**踏鳴のタイミング制御（F7 / F-2）**、`Phoenix_Order`（B28）、7秒opener（F9/F10）、PT平均ヒール（A1/A2/C1/C2）、トゥルーノース制御（B30） |
-| 🟡 **実測後** | 4件 | 上流が固定ロジックで別解を持つもの。素の上流を使って不満が出た項目だけ |
-| ⚪ **不要** | 25件 | 上流が同等以上を実装済み、または移動のみ・API追従 |
+| 🔴 **要移植** | **57件** | 多ボタン設計（B1〜B4）、`compareNextBurstTime`（F5）、**桃園と踏鳴の連動（B14）**、**踏鳴のタイミング制御（F7 / F-2）**、`Phoenix_Order`（B28）、7秒opener（F9/F10）、PT平均ヒール（A1/A2/C1/C2）、トゥルーノース制御（B30） |
+| 🟡 **実測後** | 2件 | 上流が固定ロジックで別解を持つもの。素の上流を使って不満が出た項目だけ |
+| ⚪ **不要** | 24件 | 上流が同等以上を実装済み、または移動のみ・API追従 |
 | 🐛 **バグ** | 5件 | うち2件は挙動に実害あり |
 
 セクション別の項目数: A(STシンプル) 7 / **B(STアドバンスト) 31** / C(AoEシンプル) 2 / D(AoEアドバンスト) 13 / E(その他コンボ) 2 / F(Helper) 11 / G(Config) 12 / H(Preset) 5
